@@ -1,0 +1,13 @@
+C:\Users\swipe\Desktop\RESTService.Lib\RESTService.Lib\bin\Debug\RESTService.Lib.dll
+C:\Users\swipe\Desktop\RESTService.Lib\RESTService.Lib\bin\Debug\RESTService.Lib.pdb
+C:\Users\swipe\Desktop\RESTService.Lib\RESTService.Lib\obj\Debug\RESTService.Lib.dll
+C:\Users\swipe\Desktop\RESTService.Lib\RESTService.Lib\obj\Debug\RESTService.Lib.pdb
+C:\Users\swipe\Desktop\RESTService.Lib\RESTService.Lib\bin\Debug\Newtonsoft.Json.dll
+C:\Users\swipe\Desktop\RESTService.Lib\RESTService.Lib\bin\Debug\Newtonsoft.Json.xml
+C:\Users\swipe\Desktop\ServerEmployee\RESTService.Lib\obj\Debug\RESTService.Lib.csprojResolveAssemblyReference.cache
+C:\Users\swipe\Desktop\ServerEmployee\RESTService.Lib\obj\Debug\RESTService.Lib.dll
+C:\Users\swipe\Desktop\ServerEmployee\RESTService.Lib\obj\Debug\RESTService.Lib.pdb
+C:\Users\swipe\Desktop\ServerEmployee\RESTService.Lib\bin\Debug\RESTService.Lib.dll
+C:\Users\swipe\Desktop\ServerEmployee\RESTService.Lib\bin\Debug\RESTService.Lib.pdb
+C:\Users\swipe\Desktop\ServerEmployee\RESTService.Lib\bin\Debug\Newtonsoft.Json.dll
+C:\Users\swipe\Desktop\ServerEmployee\RESTService.Lib\bin\Debug\Newtonsoft.Json.xml
