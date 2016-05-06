@@ -6,17 +6,16 @@ using RESTService.Lib;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Web;
-namespace RESTService.Hostc
+namespace RESTService.Host
 {
     class Program
     {
         static void Main(string[] args)
         {
-
             RestDemoServices DemoServices = new RestDemoServices();
             WebHttpBinding binding = new WebHttpBinding();
-            binding.MaxReceivedMessageSize = Int32.MaxValue; 
             WebHttpBehavior behavior = new WebHttpBehavior();
+
             WebServiceHost _serviceHost = new WebServiceHost(DemoServices, new Uri("http://localhost:8008/DEMOService"));
             _serviceHost.AddServiceEndpoint(typeof(IRESTDemoServices), binding, "");
             _serviceHost.Open();

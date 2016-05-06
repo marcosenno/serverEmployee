@@ -27,13 +27,13 @@ namespace RESTService.Lib
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
             connection = new MySqlConnection(connectionString);
         }
-        public MySqlConnection getConnection() 
+        public MySqlConnection getConnection()
         {
             connection.Open();
             return connection;
         }
 
-     
+
     }
 
 }

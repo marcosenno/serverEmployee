@@ -9,11 +9,11 @@ namespace RESTService.Lib
     {
         public int code { get; set; }
         public string message { get; set; }
-        public ResponseMessage() {}
-        public ResponseMessage(int code, string message) 
-        { 
-            this.code = code; 
-            this.message = message; 
+        public ResponseMessage() { }
+        public ResponseMessage(int code, string message)
+        {
+            this.code = code;
+            this.message = message;
         }
 
     }
