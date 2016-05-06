@@ -19,7 +19,7 @@ namespace RESTService.Lib
         ResponseMessage enterBadge(EmployeeBadge e); 
         
         [OperationContract]
-        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "prova")]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "prova")]
         string prova();
         
         [OperationContract]

@@ -8,7 +8,10 @@ using Newtonsoft.Json;
 using MySql.Data.MySqlClient;
 using System.Drawing.Imaging; 
 using System.IO;
-using System.Drawing; 
+using System.Drawing;
+using Emgu.CV;
+using Newtonsoft.Json.Linq;
+using Emgu.CV.Structure; 
 
 namespace RESTService.Lib
 {
@@ -18,7 +21,9 @@ namespace RESTService.Lib
     {
         enum BadgeType { ENTER, EXIT };
         private string PATHDIR = "C:\\EmployeePhoto\\openSession";
-        private string ROOT = "C:\\EmployeePhoto"; 
+        private string ROOT = "C:\\EmployeePhoto";
+        private CascadeClassifier classifier = new CascadeClassifier("haarcascade_frontalface_default.xml");
+        private Classifier_Train eigenRecog = new Classifier_Train();
 
         public ResponseMessage enterBadge(EmployeeBadge e)
         {
@@ -119,7 +124,31 @@ namespace RESTService.Lib
         }
 
         public string prova() {
-            return "ciao"; 
+            JObject o = new JObject();
+            o["I_say"] = "Hello";
+            
+            Image<Bgr, byte> receivedImg = new Image<Bgr, byte>("lena.jpg");
+            Image<Gray, Byte> normalizedImg = receivedImg.Convert<Gray, Byte>();
+
+            Rectangle[] rectangles = classifier.DetectMultiScale(normalizedImg, 1.4, 1, new Size(100, 100), new Size(800, 800));
+
+            foreach (Rectangle r in rectangles)
+                receivedImg.Draw(r, new Bgr(Color.Red), 2);
+
+            receivedImg.Save("fotoFaced.jpg");
+
+            o["rectangels"] = rectangles.Length;
+
+            normalizedImg = receivedImg.Copy(rectangles[0]).Convert<Gray, byte>().Resize(100, 100, Emgu.CV.CvEnum.Inter.Cubic);
+            normalizedImg._EqualizeHist();
+
+            eigenRecog.AddTrainingImage(normalizedImg, "lenaRfidTest");
+
+            eigenRecog.Retrain();
+
+            o["rfid"] = eigenRecog.Recognise(normalizedImg, 5);
+
+            return o.ToString();
         }
 
        public ResponseMessage blabla(string e)

@@ -6,7 +6,7 @@ using RESTService.Lib;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Web;
-namespace RESTService.Host
+namespace RESTService.Hostc
 {
     class Program
     {
