@@ -154,9 +154,9 @@ namespace RESTService.Lib
 
 
 
-        public ResponseMessage blabla(string e)
+        public ResponseMessage test()
         {
-            return new ResponseMessage(200, "stringa ricevuta:" + e);
+            return new ResponseMessage(200, "it works.");
         }
 
     }
