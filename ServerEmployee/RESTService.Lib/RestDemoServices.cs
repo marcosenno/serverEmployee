@@ -10,6 +10,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Drawing;
 using Newtonsoft.Json.Linq;
+using Emgu.CV;
+using Emgu.CV.Structure;
 
 namespace RESTService.Lib
 {
@@ -20,8 +22,8 @@ namespace RESTService.Lib
         enum BadgeType { ENTER, EXIT };
         private string PATHDIR = "C:\\EmployeePhoto\\openSession";
         private string ROOT = "C:\\EmployeePhoto";
-        //private CascadeClassifier classifier = new CascadeClassifier("haarcascade_frontalface_default.xml");
-       //private Classifier_Train eigenRecog = new Classifier_Train();
+        private CascadeClassifier classifier = new CascadeClassifier("haarcascade_frontalface_default.xml");
+       private Classifier_Train eigenRecog = new Classifier_Train();
 
         public ResponseMessage enterBadge(EmployeeBadge e)
         {
@@ -122,9 +124,7 @@ namespace RESTService.Lib
 
         public bool facialDetection(string pathpicture)
         {
-
-            return true; 
-            /*
+            
             JObject o = new JObject();
             o["I_say"] = "Hello";
 
@@ -137,9 +137,9 @@ namespace RESTService.Lib
                 receivedImg.Draw(r, new Bgr(Color.Red), 2);
 
             receivedImg.Save("fotoFaced.jpg");
-
-            o["rectangels"] = rectangles.Length;
             
+            o["rectangels"] = rectangles.Length;
+            /*
             normalizedImg = receivedImg.Copy(rectangles[0]).Convert<Gray, byte>().Resize(100, 100, Emgu.CV.CvEnum.Inter.Cubic);
             normalizedImg._EqualizeHist();
 
@@ -148,8 +148,8 @@ namespace RESTService.Lib
             eigenRecog.Retrain();
 
             o["rfid"] = eigenRecog.Recognise(normalizedImg, 5);
-            
-            return rectangles.Length >= 0;*/
+            */
+            return rectangles.Length > 0;
         }
 
 
