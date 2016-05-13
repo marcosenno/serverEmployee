@@ -43,3 +43,12 @@ C:\Users\swipe\Desktop\ServerEmployee\RESTService.Lib\bin\Debug\Newtonsoft.Json.
 C:\Users\swipe\Desktop\ServerEmployee\RESTService.Lib\obj\Debug\RESTService.Lib.dll
 C:\Users\swipe\Desktop\ServerEmployee\RESTService.Lib\obj\Debug\RESTService.Lib.pdb
 C:\Users\swipe\Desktop\ServerEmployee\RESTService.Lib\obj\Debug\RESTService.Lib.csprojResolveAssemblyReference.cache
+\\Mac\Home\Desktop\wsProject\ServerEmployee\RESTService.Lib\bin\Debug\RESTService.Lib.dll
+\\Mac\Home\Desktop\wsProject\ServerEmployee\RESTService.Lib\bin\Debug\RESTService.Lib.pdb
+\\Mac\Home\Desktop\wsProject\ServerEmployee\RESTService.Lib\bin\Debug\MySql.Data.dll
+\\Mac\Home\Desktop\wsProject\ServerEmployee\RESTService.Lib\bin\Debug\MySql.Web.dll
+\\Mac\Home\Desktop\wsProject\ServerEmployee\RESTService.Lib\bin\Debug\Newtonsoft.Json.dll
+\\Mac\Home\Desktop\wsProject\ServerEmployee\RESTService.Lib\bin\Debug\Newtonsoft.Json.xml
+\\Mac\Home\Desktop\wsProject\ServerEmployee\RESTService.Lib\obj\Debug\RESTService.Lib.dll
+\\Mac\Home\Desktop\wsProject\ServerEmployee\RESTService.Lib\obj\Debug\RESTService.Lib.pdb
+\\Mac\Home\Desktop\wsProject\ServerEmployee\RESTService.Lib\obj\Debug\RESTService.Lib.csprojResolveAssemblyReference.cache

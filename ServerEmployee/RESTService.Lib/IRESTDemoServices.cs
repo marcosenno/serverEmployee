@@ -23,12 +23,32 @@ namespace RESTService.Lib
         ResponseMessage exitBadge(EmployeeBadge e);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json,RequestFormat = WebMessageFormat.Json, UriTemplate = "test")]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "test")]
         ResponseMessage test();
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "employees")]
+        Employee[] getEmployees();
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "employees/{rfid}")]
+        Employee getEmployee(string rfid);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "employees/{rfid}")]
+        ResponseMessage addEmployee(string rfid, Employee employee);
 
+        [OperationContract]
+        [WebInvoke(Method = "PUT", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "employees/{rfid}")]
+        ResponseMessage editEmployee(string rfid, Employee employee);
+
+        [OperationContract]
+        [WebInvoke(Method = "OPTIONS", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "employees/{rfid}")]
+        ResponseMessage editEmployeeOptions(string rfid, Employee employee);
+
+        [OperationContract]
+        [WebInvoke(Method = "DELETE", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "employees/{rfid}")]
+        ResponseMessage deleteEmployee(string rfid);
 
     }
 }

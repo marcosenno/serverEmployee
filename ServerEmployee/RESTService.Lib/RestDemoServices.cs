@@ -12,6 +12,8 @@ using System.Drawing;
 using Newtonsoft.Json.Linq;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using System.Web;
+using System.ServiceModel.Web;
 
 namespace RESTService.Lib
 {
@@ -23,7 +25,7 @@ namespace RESTService.Lib
         private string PATHDIR = "C:\\EmployeePhoto\\openSession";
         private string ROOT = "C:\\EmployeePhoto";
         private CascadeClassifier classifier = new CascadeClassifier("haarcascade_frontalface_default.xml");
-       private Classifier_Train eigenRecog = new Classifier_Train();
+        private Classifier_Train eigenRecog = new Classifier_Train();
 
         public ResponseMessage enterBadge(EmployeeBadge e)
         {
@@ -104,17 +106,16 @@ namespace RESTService.Lib
                 File.Move(PATHDIR + "\\" + session + ".bmp", ROOT + "\\" + rfid + "\\" + session + ".bmp");
 
         }
+
         public string getPictureUri(string rfid, string session)
         {
             return ROOT + "\\" + rfid + "\\" + session + ".bmp";
         }
 
-
         public ResponseMessage exitBadge(EmployeeBadge e)
         {
             return new ResponseMessage(200, "Buona serata");
         }
-
 
         public ResponseMessage test(string s, Stream fileStream)
         {
@@ -152,12 +153,140 @@ namespace RESTService.Lib
             return rectangles.Length > 0;
         }
 
-
-
         public ResponseMessage test()
         {
             return new ResponseMessage(200, "it works.");
         }
 
+        public Employee[] getEmployees()
+        {
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Max-Age", "1728000");
+
+            DBConnect db = new DBConnect();
+            MySqlConnection conn = db.getConnection();
+            string query = "SELECT * FROM user";
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+
+            List<Employee> employeeArray = new List<Employee>();
+
+            while (dataReader.Read())
+            {
+                Employee employee = new Employee();
+                employee.rfid = dataReader["rfid"].ToString();
+                employee.name = dataReader["name"].ToString();
+                employee.surname = dataReader["surname"].ToString();
+
+                employeeArray.Add(employee);
+            }
+            
+            dataReader.Close();
+
+            conn.Close();
+
+            return employeeArray.ToArray();
+        }
+
+        public Employee getEmployee(string rfid)
+        {
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Max-Age", "1728000");
+
+            Employee e = new Employee();
+            e.rfid = rfid;
+
+            DBConnect db = new DBConnect();
+            MySqlConnection conn = db.getConnection();
+            string query = "SELECT * FROM user where rfid='" + rfid + "'";
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            if (dataReader.Read())
+            {
+                e.name = dataReader["name"].ToString();
+                e.surname = dataReader["surname"].ToString();
+            }
+
+            conn.Close();
+
+            return e;
+        }
+
+        public ResponseMessage addEmployee(string rfid, Employee employee)
+        {
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Max-Age", "1728000");
+
+            DBConnect db = new DBConnect();
+            MySqlConnection conn = db.getConnection();
+            string query = "INSERT INTO `user`(`rfid`, `name`, `surname`, `photo`) VALUES ('" + employee.rfid + "','" + employee.name + "','" + employee.surname + "','null')";
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+            int row = cmd.ExecuteNonQuery();
+
+            conn.Close();
+
+            if (row == 1)
+                return new ResponseMessage(200, "OK");
+            else
+                return new ResponseMessage(500, "Server Error");
+        }
+
+        public ResponseMessage editEmployee(string rfid, Employee employee)
+        {
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Max-Age", "1728000");
+
+            DBConnect db = new DBConnect();
+            MySqlConnection conn = db.getConnection();
+            string query = "UPDATE `user` SET `name` = '" + employee.name + "', `surname` = '" + employee.surname + "' WHERE `user`.`rfid` = '" + employee.rfid + "'";
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+            int row = cmd.ExecuteNonQuery();
+
+            conn.Close();
+
+            if(row == 1)
+                return new ResponseMessage(200, "OK");
+            else
+                return new ResponseMessage(500, "Server Error");
+        }
+
+        public ResponseMessage editEmployeeOptions(string rfid, Employee employee)
+        {
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Max-Age", "1728000");
+            return new ResponseMessage(200, "OK");
+        }
+
+        public ResponseMessage deleteEmployee(string rfid)
+        {
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Max-Age", "1728000");
+
+            DBConnect db = new DBConnect();
+            MySqlConnection conn = db.getConnection();
+            string query = "DELETE FROM `user` WHERE `user`.`rfid` = '" + rfid + "'";
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+            int row = cmd.ExecuteNonQuery();
+
+            conn.Close();
+
+            if (row == 1)
+                return new ResponseMessage(200, "OK");
+            else
+                return new ResponseMessage(500, "Server Error");
+        }
     }
 }
