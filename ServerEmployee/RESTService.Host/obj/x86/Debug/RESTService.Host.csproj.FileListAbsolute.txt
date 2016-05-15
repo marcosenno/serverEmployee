@@ -51,3 +51,17 @@ C:\Users\swipe\Desktop\ServerEmployee\RESTService.Host\obj\x86\Debug\RESTService
 \\Mac\Home\Desktop\wsProject\ServerEmployee\RESTService.Host\obj\x86\Debug\RESTService.Host.csprojResolveAssemblyReference.cache
 \\Mac\Home\Desktop\wsProject\ServerEmployee\RESTService.Host\obj\x86\Debug\RESTService.Host.exe
 \\Mac\Home\Desktop\wsProject\ServerEmployee\RESTService.Host\obj\x86\Debug\RESTService.Host.pdb
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\RESTService.Host.exe.config
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\obj\x86\Debug\RESTService.Host.exe
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\obj\x86\Debug\RESTService.Host.pdb
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\RESTService.Host.exe
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\RESTService.Host.pdb
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\Newtonsoft.Json.dll
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\RESTService.Lib.dll
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\Emgu.CV.Contrib.dll
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\Emgu.CV.dll
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\Emgu.Util.dll
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\Emgu.CV.Cuda.dll
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\RESTService.Lib.pdb
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\Newtonsoft.Json.xml
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\obj\x86\Debug\RESTService.Host.csprojResolveAssemblyReference.cache

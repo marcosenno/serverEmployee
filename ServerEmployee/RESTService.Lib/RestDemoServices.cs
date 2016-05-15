@@ -112,9 +112,138 @@ namespace RESTService.Lib
             return ROOT + "\\" + rfid + "\\" + session + ".bmp";
         }
 
+
+
         public ResponseMessage exitBadge(EmployeeBadge e)
         {
-            return new ResponseMessage(200, "Buona serata");
+            
+            DBConnect db = new DBConnect();
+            MySqlConnection conn = db.getConnection();
+            string query = "SELECT * FROM user where rfid='" + e.rfid + "'";
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            string name = "none", surname = "none";
+            if (dataReader.Read())
+            {
+                name = dataReader["name"].ToString();
+                surname = dataReader["surname"].ToString();
+            }
+            else
+            {
+                conn.Close();
+                return new ResponseMessage(201, "Not found RFID.");
+            }
+
+            conn.Close();
+
+
+            db = new DBConnect();
+            conn = db.getConnection();
+            query = "SELECT * FROM sessions_user where session_id='" + e.session + "'";
+            cmd = new MySqlCommand(query, conn);
+            dataReader = cmd.ExecuteReader();
+            if (!dataReader.Read())
+            {
+                conn.Close();
+                return new ResponseMessage(201, "Not found session.");
+            }
+            conn.Close();
+
+            db = new DBConnect();
+            conn = db.getConnection();
+            MySqlCommand cmd2 = new MySqlCommand();
+            cmd2.Connection = conn;
+            cmd2.CommandText = "INSERT INTO access(rfid,date,time,type,session_id) VALUES(?a,?b,?c,?d,?e)";
+            cmd2.Parameters.Add("?a", MySqlDbType.VarChar).Value = e.rfid;
+            DateTime d = DateTime.Now;
+            cmd2.Parameters.Add("?b", MySqlDbType.Date).Value = d.Date;
+            cmd2.Parameters.Add("?c", MySqlDbType.VarChar).Value = (d - DateTime.Today).TotalSeconds;
+            cmd2.Parameters.Add("?d", MySqlDbType.Enum).Value = BadgeType.ENTER;
+            cmd2.Parameters.Add("?e", MySqlDbType.LongBlob).Value = e.session;
+            cmd2.ExecuteNonQuery();
+            conn.Close();
+
+
+            db = new DBConnect();
+            conn = db.getConnection();
+            MySqlCommand cmd3 = new MySqlCommand();
+            cmd3.Connection = conn;
+            cmd3.CommandText = "delete from sessions_user where session_id =?a ";
+            cmd3.Parameters.Add("?a", MySqlDbType.VarChar).Value = e.session;
+            cmd3.ExecuteNonQuery();
+            conn.Close();
+            
+            concludeSession(e.rfid, e.session);
+            if (facialDetection(getPictureUri(e.rfid, e.session)))
+            {
+                try
+                {
+                    int sec = getSeconds(e);
+                    return new ResponseMessage(200, "seconds:" + sec );
+                }
+                catch (Exception ex) { return new ResponseMessage(201, ex.Message); } 
+            }
+            else
+                return new ResponseMessage(404, "Face Not found.");
+        }
+
+        private int getSeconds(EmployeeBadge e)
+        {
+            DBConnect db = new DBConnect();
+            MySqlConnection conn = db.getConnection();
+            string query = "SELECT * FROM `access` where rfid='" + e.rfid + "'" + " and session_id='" + e.session + "'" + " and type='" + BadgeType.EXIT + "'";
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            DateTime d;
+            string secondExit = "";
+            string secondEnter = ""; 
+
+            if (!dataReader.Read())
+            {
+                conn.Close();
+                throw new Exception("Not found session or rfid or type wrong.");
+
+            }
+            else
+            {
+                d = (DateTime) dataReader["date"];
+                secondExit = dataReader["time"].ToString(); 
+            }
+            conn.Close();
+
+            string datesql = d.Year + "-" + d.Month + "-" + d.Day;
+            query = "SELECT * FROM `access` where rfid='" + e.rfid + "'" + " and type='" + BadgeType.ENTER + "'" + " and date='" + datesql + "'";
+            db = new DBConnect();
+            conn = db.getConnection();
+            cmd = new MySqlCommand(query, conn);
+            dataReader = cmd.ExecuteReader();
+            Double maxNow = 0.0;
+            int control = 0; 
+            while(dataReader.Read())
+            {
+                if (control == 0)
+                    control++; 
+                if (Double.Parse(dataReader["time"].ToString()) > maxNow)
+                {
+                    secondEnter = dataReader["time"].ToString();
+                    maxNow = Double.Parse(dataReader["time"].ToString());
+                }
+
+            }
+            if (control == 0)
+            {
+                conn.Close();
+                throw new Exception("You are trying to cheat the system.");
+            }
+            conn.Close();
+           //compute difference 
+            Double fexit = 0.0,fenter = 0.0;
+            fexit = Double.Parse(secondExit);
+            fenter = Double.Parse(secondEnter);
+            Double doublesecondsOfWork = fexit - fenter;
+            int secondOfWork = (int)doublesecondsOfWork; 
+
+            return secondOfWork; 
         }
 
         public ResponseMessage test(string s, Stream fileStream)
