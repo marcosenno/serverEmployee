@@ -6,12 +6,16 @@ using RESTService.Lib;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Web;
+using System.Threading; 
 namespace RESTService.Host
 {
     class Program
     {
         static void Main(string[] args)
         {
+            Thread thread = new Thread(new ThreadStart(SocketPhoto.SERVICE));
+            thread.Start();
+
             RestDemoServices DemoServices = new RestDemoServices();
             WebHttpBinding binding = new WebHttpBinding();
             WebHttpBehavior behavior = new WebHttpBehavior();

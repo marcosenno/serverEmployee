@@ -65,3 +65,4 @@ C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\Emgu
 C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\RESTService.Lib.pdb
 C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\Newtonsoft.Json.xml
 C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\obj\x86\Debug\RESTService.Host.csprojResolveAssemblyReference.cache
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\MySql.Web.v20.dll

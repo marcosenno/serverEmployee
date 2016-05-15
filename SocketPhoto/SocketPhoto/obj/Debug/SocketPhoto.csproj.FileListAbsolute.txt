@@ -1,9 +1,0 @@
-C:\Users\swipe\Desktop\SocketPhoto\SocketPhoto\bin\Debug\SocketPhoto.exe.config
-C:\Users\swipe\Desktop\SocketPhoto\SocketPhoto\bin\Debug\SocketPhoto.exe
-C:\Users\swipe\Desktop\SocketPhoto\SocketPhoto\bin\Debug\SocketPhoto.pdb
-C:\Users\swipe\Desktop\SocketPhoto\SocketPhoto\obj\Debug\SocketPhoto.csprojResolveAssemblyReference.cache
-C:\Users\swipe\Desktop\SocketPhoto\SocketPhoto\obj\Debug\SocketPhoto.exe
-C:\Users\swipe\Desktop\SocketPhoto\SocketPhoto\obj\Debug\SocketPhoto.pdb
-C:\Users\swipe\Desktop\server\SocketPhoto\SocketPhoto\bin\Debug\SocketPhoto.exe.config
-C:\Users\swipe\Desktop\server\SocketPhoto\SocketPhoto\obj\Debug\SocketPhoto.exe
-C:\Users\swipe\Desktop\server\SocketPhoto\SocketPhoto\obj\Debug\SocketPhoto.pdb
