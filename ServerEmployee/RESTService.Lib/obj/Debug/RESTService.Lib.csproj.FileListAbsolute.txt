@@ -59,3 +59,12 @@ C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Lib\bin\Debug\RESTS
 C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Lib\bin\Debug\Newtonsoft.Json.dll
 C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Lib\bin\Debug\Newtonsoft.Json.xml
 C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Lib\obj\Debug\RESTService.Lib.pdb
+C:\Users\Joonas\Documents\GitHub\serverEmployee\ServerEmployee\RESTService.Lib\bin\Debug\RESTService.Lib.dll
+C:\Users\Joonas\Documents\GitHub\serverEmployee\ServerEmployee\RESTService.Lib\bin\Debug\RESTService.Lib.pdb
+C:\Users\Joonas\Documents\GitHub\serverEmployee\ServerEmployee\RESTService.Lib\bin\Debug\MySql.Data.dll
+C:\Users\Joonas\Documents\GitHub\serverEmployee\ServerEmployee\RESTService.Lib\bin\Debug\MySql.Web.dll
+C:\Users\Joonas\Documents\GitHub\serverEmployee\ServerEmployee\RESTService.Lib\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Joonas\Documents\GitHub\serverEmployee\ServerEmployee\RESTService.Lib\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Joonas\Documents\GitHub\serverEmployee\ServerEmployee\RESTService.Lib\obj\Debug\RESTService.Lib.csprojResolveAssemblyReference.cache
+C:\Users\Joonas\Documents\GitHub\serverEmployee\ServerEmployee\RESTService.Lib\obj\Debug\RESTService.Lib.dll
+C:\Users\Joonas\Documents\GitHub\serverEmployee\ServerEmployee\RESTService.Lib\obj\Debug\RESTService.Lib.pdb

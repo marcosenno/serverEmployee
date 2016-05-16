@@ -14,6 +14,7 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using System.Web;
 using System.ServiceModel.Web;
+using System.Diagnostics;
 
 namespace RESTService.Lib
 {
@@ -29,7 +30,7 @@ namespace RESTService.Lib
 
         public ResponseMessage enterBadge(EmployeeBadge e)
         {
-
+            Debug.WriteLine("enterBadge called");
             DBConnect db = new DBConnect();
             MySqlConnection conn = db.getConnection();
             string query = "SELECT * FROM user where rfid='" + e.rfid + "'";
@@ -40,10 +41,12 @@ namespace RESTService.Lib
             {
                 name = dataReader["name"].ToString();
                 surname = dataReader["surname"].ToString();
+                Debug.WriteLine("RFID belongs to " + name + " " + surname);
             }
             else
             {
                 conn.Close();
+                Debug.WriteLine("Person with that RFID not found");
                 return new ResponseMessage(201, "Not found RFID.");
             }
 
@@ -58,6 +61,7 @@ namespace RESTService.Lib
             if (!dataReader.Read())
             {
                 conn.Close();
+                Debug.WriteLine("Session '" + e.session + "' not found");
                 return new ResponseMessage(201, "Not found session.");
             }
             conn.Close();
@@ -73,7 +77,15 @@ namespace RESTService.Lib
             cmd2.Parameters.Add("?c", MySqlDbType.VarChar).Value = (d - DateTime.Today).TotalSeconds;
             cmd2.Parameters.Add("?d", MySqlDbType.Enum).Value = BadgeType.ENTER;
             cmd2.Parameters.Add("?e", MySqlDbType.LongBlob).Value = e.session;
-            cmd2.ExecuteNonQuery();
+            try
+            {
+                cmd2.ExecuteNonQuery();
+                Debug.WriteLine("INSERT for RFID "+e.rfid+", date "+ d.Date.ToShortDateString()+", time "+(d - DateTime.Today).TotalSeconds.ToString()+" session_id "+e.session+" type ENTER into access executed");
+            }
+            catch(MySqlException ex)
+            {
+                Debug.WriteLine("Insertion execution failed, error code: " +ex.Number);
+            }
             conn.Close();
 
 
@@ -89,9 +101,11 @@ namespace RESTService.Lib
             concludeSession(e.rfid, e.session);
             if (facialDetection(getPictureUri(e.rfid, e.session)))
             {
+                Debug.WriteLine("Face succesfully detected");
                 return new ResponseMessage(200, "Welcome " + name + " " + surname);
             }
             else
+                Debug.WriteLine("Face not detected");
                 return new ResponseMessage(404, "Face Not found.");
 
 
@@ -116,7 +130,7 @@ namespace RESTService.Lib
 
         public ResponseMessage exitBadge(EmployeeBadge e)
         {
-            
+            Debug.WriteLine("exitBadge called");
             DBConnect db = new DBConnect();
             MySqlConnection conn = db.getConnection();
             string query = "SELECT * FROM user where rfid='" + e.rfid + "'";
@@ -127,10 +141,12 @@ namespace RESTService.Lib
             {
                 name = dataReader["name"].ToString();
                 surname = dataReader["surname"].ToString();
+                Debug.WriteLine("RFID belongs to " + name + " " + surname);
             }
             else
             {
                 conn.Close();
+                Debug.WriteLine("Person with that RFID not found");
                 return new ResponseMessage(201, "Not found RFID.");
             }
 
@@ -144,6 +160,7 @@ namespace RESTService.Lib
             dataReader = cmd.ExecuteReader();
             if (!dataReader.Read())
             {
+                Debug.WriteLine("Session '" + e.session + "' not found");
                 conn.Close();
                 return new ResponseMessage(201, "Not found session.");
             }
@@ -158,9 +175,17 @@ namespace RESTService.Lib
             DateTime d = DateTime.Now;
             cmd2.Parameters.Add("?b", MySqlDbType.Date).Value = d.Date;
             cmd2.Parameters.Add("?c", MySqlDbType.VarChar).Value = (d - DateTime.Today).TotalSeconds;
-            cmd2.Parameters.Add("?d", MySqlDbType.Enum).Value = BadgeType.ENTER;
+            cmd2.Parameters.Add("?d", MySqlDbType.Enum).Value = BadgeType.EXIT;
             cmd2.Parameters.Add("?e", MySqlDbType.LongBlob).Value = e.session;
-            cmd2.ExecuteNonQuery();
+            try
+            {
+                cmd2.ExecuteNonQuery();
+                Debug.WriteLine("INSERT for RFID " + e.rfid + ", date " + d.Date.ToShortDateString() + ", time " + (d - DateTime.Today).TotalSeconds.ToString() + " session_id " + e.session + " type EXIT into access executed");
+            }
+            catch (MySqlException ex)
+            {
+                Debug.WriteLine("Insertion execution failed, error code: " + ex.Number);
+            }
             conn.Close();
 
 
@@ -170,7 +195,14 @@ namespace RESTService.Lib
             cmd3.Connection = conn;
             cmd3.CommandText = "delete from sessions_user where session_id =?a ";
             cmd3.Parameters.Add("?a", MySqlDbType.VarChar).Value = e.session;
-            cmd3.ExecuteNonQuery();
+            try
+            {
+                cmd3.ExecuteNonQuery();
+            }
+            catch (MySqlException ex)
+            {
+                Debug.WriteLine("Failed to delete from sessions_user, error code: " + ex.Number);
+            }
             conn.Close();
             
             concludeSession(e.rfid, e.session);
@@ -181,7 +213,10 @@ namespace RESTService.Lib
                     int sec = getSeconds(e);
                     return new ResponseMessage(200, "seconds:" + sec );
                 }
-                catch (Exception ex) { return new ResponseMessage(201, ex.Message); } 
+                catch (Exception ex) 
+                {
+                    return new ResponseMessage(201, ex.Message);
+                } 
             }
             else
                 return new ResponseMessage(404, "Face Not found.");
@@ -189,6 +224,7 @@ namespace RESTService.Lib
 
         private int getSeconds(EmployeeBadge e)
         {
+            Debug.WriteLine("getSeconds called");
             DBConnect db = new DBConnect();
             MySqlConnection conn = db.getConnection();
             string query = "SELECT * FROM `access` where rfid='" + e.rfid + "'" + " and session_id='" + e.session + "'" + " and type='" + BadgeType.EXIT + "'";
@@ -201,6 +237,7 @@ namespace RESTService.Lib
             if (!dataReader.Read())
             {
                 conn.Close();
+                Debug.WriteLine("Entry for {0} {1} {2} not found in 'access' table", e.rfid, e.session, BadgeType.EXIT);
                 throw new Exception("Not found session or rfid or type wrong.");
 
             }
@@ -241,8 +278,8 @@ namespace RESTService.Lib
             fexit = Double.Parse(secondExit);
             fenter = Double.Parse(secondEnter);
             Double doublesecondsOfWork = fexit - fenter;
-            int secondOfWork = (int)doublesecondsOfWork; 
-
+            int secondOfWork = (int)doublesecondsOfWork;
+            Debug.WriteLine("calculated seconds: " + secondOfWork.ToString());
             return secondOfWork; 
         }
 
