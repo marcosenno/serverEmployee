@@ -66,6 +66,23 @@ namespace RESTService.Lib
             }
             conn.Close();
 
+
+
+
+            db = new DBConnect();
+            conn = db.getConnection();
+            query = "SELECT COUNT(*) FROM access where rfid='" + e.rfid + "'";
+            cmd = new MySqlCommand(query, conn);
+            int count = Convert.ToInt32(cmd.ExecuteScalar());
+            if (count % 2 != 0)
+            {
+                conn.Close();
+                File.Delete(PATHDIR + "\\" + e.session + ".bmp");
+                return new ResponseMessage(201, "You cannot enter again.");
+            }
+            conn.Close();
+
+
             db = new DBConnect();
             conn = db.getConnection();
             MySqlCommand cmd2 = new MySqlCommand();
@@ -165,6 +182,27 @@ namespace RESTService.Lib
                 return new ResponseMessage(201, "Not found session.");
             }
             conn.Close();
+
+
+
+            db = new DBConnect();
+            conn = db.getConnection();
+            query = "SELECT COUNT(*) FROM access where rfid='" + e.rfid + "'";
+            cmd = new MySqlCommand(query, conn);
+            int count = Convert.ToInt32(cmd.ExecuteScalar());
+            if (count % 2 == 0)
+            {
+                conn.Close();
+                File.Delete(PATHDIR + "\\" + e.session + ".bmp");
+                return new ResponseMessage(201, "You cannot exit again.");
+            }
+            conn.Close();
+
+
+
+           
+
+
 
             db = new DBConnect();
             conn = db.getConnection();
