@@ -1,0 +1,31 @@
+.body {
+  font-size: 10cm;
+}
+.employees_table{
+  width: 100%;
+  margin: auto;
+}
+
+#EditEmployee,
+#AddNewEmployee{
+  float: right;
+  margin: 30px;
+}
+
+div.mdl-layout__header-row{
+  padding-left: 20px;
+}
+
+div.form_container{
+  margin: 20px;
+}
+
+div.mdl-textfield{
+  display: block;
+  margin: auto;
+  width: 400px;
+}
+
+label.mdl-textfield__floating-label{
+  color: #BDBDBD;
+}

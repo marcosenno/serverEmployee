@@ -1,0 +1,132 @@
+<!DOCTYPE unspecified PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="css/delete.css"
+	media="screen" />
+<script type="text/javascript" src="jquery-2.2.3.min.js"></script>
+<script type="text/javascript">
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+var rfidUrl = getParameterByName("rfid");
+if(rfidUrl == "" || rfidUrl == null) document.location.href="index.php";
+//alert(rfidUrl);
+
+$(document).ready(function() {
+
+	$.ajax({
+        type: 'GET',
+        url: 'http://localhost:8008/DEMOService/employees/'+rfidUrl,
+        //data: { get_param: 'value' },
+        dataType: 'json',
+        success: function (data) {
+        	//alert("Success: " + data['code'] + " " + data['message'] + "JSON is: " + JSON.stringify(data));
+        	var json = JSON.parse(JSON.stringify(data));
+
+        	if(json != null){
+				if(json.rfid == null || json.name == null || json.surname == null){
+					alert("Rfid doesn't exist");
+					document.location.href="index.php";
+				}else{
+					$("#rfidInputText").val(json.rfid);
+            		$("#nameInputText").val(json.name);
+            		$("#surnameInputText").val(json.surname);
+				}
+			}else{
+				alert("error");
+			}
+        },
+        error: function (result) {
+            alert("Error");
+        }
+    });
+
+	$(".EmployeesList").click(function(){
+		document.location.href="index.php";
+	});
+
+	$("#DeleteEmployee").click(function(){
+		//get input fields
+		var rfid = $("#rfidInputText").val();
+		var name = $("#nameInputText").val();
+		var surname = $("#surnameInputText").val();
+
+		if(rfid == "" || name == "" || surname == "") return;
+
+		//alert(rfid + " " + name + " " + surname);
+
+		var jsonRequest = {
+							rfid: rfid,
+							name: name,
+							surname: surname
+						}
+
+		//ajax call
+		$.ajax({
+	        type: 'DELETE',
+	        url: 'http://localhost:8008/DEMOService/employees/'+rfid,
+	        contentType: 'application/json; charset=utf-8',
+	        data: JSON.stringify(jsonRequest),
+	        dataType: 'json',
+	        success: function (data) {
+	        	var json = JSON.parse(JSON.stringify(data));
+				if(json != null){
+					if(json.code == 200){
+						if(json.message != null)
+							alert("success: " + json.message);
+						else
+							alert("success");
+					}else{
+						if(json.message != null)
+							alert("error: " + json.message);
+						else
+							alert("error");
+					}
+				}else{
+					alert("error");
+				}
+
+				document.location.href="index.php";
+	        },
+	        error: function (result) {
+	            alert("Error");
+	            document.location.href="index.php";
+	        }
+	    });
+
+	});
+});
+
+</script>
+
+</head>
+<body>
+	<button class="EmployeesList">Employees List</button>
+	<div>
+		<table id="EmployeesTable">
+			<tr>
+				<th>RFID</th>
+				<td><input type="text" id="rfidInputText" readonly/></td>
+			</tr>
+			<tr>
+				<th>Name</th>
+				<td><input type="text" id="nameInputText" readonly/></td>
+			</tr>
+			<tr>
+				<th>Surname</th>
+				<td><input type="text" id="surnameInputText" readonly/></td>
+			</tr>
+		</table>
+		<p>Are you sure that you wanna delete this employee?</p>
+		<button class="EmployeesList">No</button>
+		<button id="DeleteEmployee">Yes</button>
+	</div>
+</body>
+</html>
