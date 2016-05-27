@@ -11,14 +11,10 @@
 		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 		<script language="JavaScript">
 			$(document).ready(function() {
-				$("#EmployeesList").click(function(){
-					document.location.href="index.html";
-				});
-
 
 				$("#webcam").scriptcam({
+					path: '<?php echo $this->config->base_url(); ?>',
 					showMicrophoneErrors:false,
-					onError:onError,
 					cornerRadius:20,
 					disableHardwareAcceleration:1,
 					cornerColor:'e3e5e2',
@@ -26,6 +22,11 @@
 					uploadImage:'upload.gif',
 					onPictureAsBase64:base64_tofield_and_image
 				});
+
+				$("#EmployeesList").click(function(){
+					document.location.href="index.html";
+				});
+
 
 				$("#AddEmployee").click(function(){
 					//get input fields
