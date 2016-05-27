@@ -421,25 +421,31 @@ namespace RESTService.Lib
             return e;
         }
 
-        public ResponseMessage addEmployee(string rfid, Employee employee)
+        public ResponseMessage addEmployee(string rfid, EmployeePic employee)
         {
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Max-Age", "1728000");
 
-            DBConnect db = new DBConnect();
+            try{
+            byte[] pict = Convert.FromBase64String(employee.picture);
+            DBConnect db = new DBConnect(); 
             MySqlConnection conn = db.getConnection();
-            string query = "INSERT INTO `user`(`rfid`, `name`, `surname`, `photo`) VALUES ('" + employee.rfid + "','" + employee.name + "','" + employee.surname + "','null')";
-            MySqlCommand cmd = new MySqlCommand(query, conn);
-            int row = cmd.ExecuteNonQuery();
-
-            conn.Close();
-
-            if (row == 1)
-                return new ResponseMessage(200, "OK");
-            else
-                return new ResponseMessage(500, "Server Error");
+            MySqlCommand cmd2 = new MySqlCommand();
+            cmd2.Connection = conn;
+            cmd2.CommandText = "INSERT INTO `user`(`rfid`, `name`, `surname`, `photo`) VALUES (?a,?b,?c,?d);";
+            cmd2.Parameters.Add("?a", MySqlDbType.VarChar).Value = employee.employee.rfid;
+            cmd2.Parameters.Add("?b", MySqlDbType.VarChar).Value = employee.employee.name;
+            cmd2.Parameters.Add("?c", MySqlDbType.VarChar).Value = employee.employee.surname;
+            cmd2.Parameters.Add("?d", MySqlDbType.Blob).Value = pict; 
+            cmd2.ExecuteNonQuery();
+            conn.Close(); 
+            }catch(Exception e){
+                return new ResponseMessage(201,"Impossible to insert a new Employee."); 
+            }
+            return new ResponseMessage(200, employee.employee.name + " " + employee.employee.surname + " added correctly."); 
+            
         }
 
         public ResponseMessage editEmployee(string rfid, Employee employee)
@@ -481,7 +487,7 @@ namespace RESTService.Lib
 
             DBConnect db = new DBConnect();
             MySqlConnection conn = db.getConnection();
-            string query = "DELETE FROM `user` WHERE `user`.`rfid` = '" + rfid + "'";
+            string query = "DELETE FROM `user` WHERE `rfid` = '" + rfid + "'";
             MySqlCommand cmd = new MySqlCommand(query, conn);
             int row = cmd.ExecuteNonQuery();
 

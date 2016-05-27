@@ -36,11 +36,14 @@ namespace RESTService.Lib
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "employees/{rfid}")]
-        ResponseMessage addEmployee(string rfid, Employee employee);
+        ResponseMessage addEmployee(string rfid, EmployeePic employee);
 
         [OperationContract]
         [WebInvoke(Method = "PUT", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "employees/{rfid}")]
         ResponseMessage editEmployee(string rfid, Employee employee);
+
+
+         
 
         [OperationContract]
         [WebInvoke(Method = "OPTIONS", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "employees/{rfid}")]
@@ -49,6 +52,8 @@ namespace RESTService.Lib
         [OperationContract]
         [WebInvoke(Method = "DELETE", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "employees/{rfid}")]
         ResponseMessage deleteEmployee(string rfid);
+
+
 
     }
 }
