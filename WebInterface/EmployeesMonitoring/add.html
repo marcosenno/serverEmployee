@@ -1,176 +1,183 @@
 <!DOCTYPE unspecified PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-	<head>
-		<script type="text/javascript" src="jquery-2.2.3.min.js"></script>
-		<script language="JavaScript" src="swfobject.js"></script>
-		<script language="JavaScript" src="scriptcam.js"></script>
-		<link rel="stylesheet" type="text/css" href="css/style.css"
-			media="screen" />
-		<link rel="stylesheet" href="./material.min.css">
-		<script src="./material.min.js"></script>
-		<link rel="stylesheet" href="css/material_font.css">
-		<script language="JavaScript">
+<head>
+    <script type="text/javascript" src="jquery-2.2.3.min.js"></script>
+    <script language="JavaScript" src="swfobject.js"></script>
+    <script language="JavaScript" src="scriptcam.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css"
+          media="screen"/>
+    <link rel="stylesheet" href="./material.min.css">
+    <script src="./material.min.js"></script>
+    <link rel="stylesheet" href="css/material_font.css">
+    <script language="JavaScript">
 
-			var photo = "";
+        var photo = "";
 
-			$(document).ready(function() {
-				$("#EmployeesList").click(function(){
-					document.location.href="index.html";
-				});
-
-
-				$("#webcam").scriptcam({
-					showMicrophoneErrors:false,
-					onError:onError,
-					cornerRadius:20,
-					disableHardwareAcceleration:1,
-					cornerColor:'e3e5e2',
-					onWebcamReady:onWebcamReady,
-					uploadImage:'upload.gif',
-					onPictureAsBase64:base64_tofield_and_image
-				});
-
-				$("#AddEmployee").click(function(){
-					//get input fields
-					var rfid = $("#rfidInputText").val();
-					var name = $("#nameInputText").val();
-					var surname = $("#surnameInputText").val();
-
-					if(rfid == "" || name == "" || surname == "" || photo == ""){
-						alert("Please, fill all fileds");
-						 return;
-					 }
-
-					//alert(rfid + " " + name + " " + surname);
-					var jsonRequest = {
-						employee : {
-							rfid: rfid,
-							name: name,
-							surname: surname
-						},
-						photo: photo
-					}
-
-					//ajax call
-					$.ajax({
-				        type: 'POST',
-				        url: 'http://localhost:8008/DEMOService/employees/'+rfid,
-				        contentType: 'application/json; charset=utf-8',
-				        data: JSON.stringify(jsonRequest),
-				        dataType: 'json',
-				        success: function (data) {
-				        	var json = JSON.parse(JSON.stringify(data));
-							if(json != null){
-								if(json.code == 200){
-									if(json.message != null)
-										alert("success: " + json.message);
-									else
-										alert("success");
-								}else{
-									if(json.message != null)
-										alert("error: " + json.message);
-									else
-										alert("error");
-								}
-							}else{
-								alert("error");
-							}
-
-							document.location.href="index.html";
-				        },
-				        error: function (result) {
-				            alert("Error");
-				            document.location.href="index.html";
-				        }
-				    });
-
-				});
-			});
-			function base64_tofield() {
-				$('#formfield').val($.scriptcam.getFrameAsBase64());
-			};
-			function base64_toimage() {
-				photo = $.scriptcam.getFrameAsBase64();
-				$('#picture').attr("src","data:image/png;base64,"+photo);
-				$('#webcam').css("display", "none");
-				$('#btn_Take').css("display", "none");
-				$('#btn_Remove').css("display", "block");
-				$('#picture').css("display", "block");
-			};
-			function base64_tofield_and_image(b64) {
-				$('#formfield').val(b64);
-				$('#image').attr("src","data:image/png;base64,"+b64);
-			};
-			function changeCamera() {
-				$.scriptcam.changeCamera($('#cameraNames').val());
-			}
-			function onError(errorId,errorMsg) {
-				$( "#btn1" ).attr( "disabled", true );
-				$( "#btn2" ).attr( "disabled", true );
-				alert(errorMsg);
-			}
-			function onWebcamReady(cameraNames,camera,microphoneNames,microphone,volume) {
-				$('.webcam').attr("width", $('#webcam').width());
-				$('#picture').attr("width", $('#webcam').width());
-			}
-			function removePhoto(){
-				$("#webcam").css("display", "block");
-				$('#btn_Take').css("display", "block");
-				$('#btn_Remove').css("display", "none");
-				$('#picture').css("display", "none");
-			}
-		</script>
-	</head>
-	<body>
-		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-			<header class="mdl-layout__header">
-				<div class="mdl-layout__header-row">
-					<!-- Title -->
-					<button id="EmployeesList" class="mdl-button mdl-js-button mdl-button--icon">
-							<i class="material-icons">arrow_back</i>
-						</button>
-					<span class="mdl-layout-title">Emplooyees</span>
-					<!-- Navigation. We hide it in small screens. -->
-				</div>
-			</header>
-			<main class="mdl-layout__content">
-				<div class="page-content">
-					<!-- Your content goes here -->
-					<div class="form_container">
-						<div class="form_field mdl-textfield">
-							<input id="nameInputText" class="mdl-textfield__input" type="text" id="name">
-							<label class="mdl-textfield__floating-label" for="user">Employee name</label>
-						</div>
-						<div class="form_field mdl-textfield">
-							<input id="surnameInputText" class="mdl-textfield__input" type="text" id="surname">
-							<label class="mdl-textfield__floating-label" for="user">Employee surname</label>
-						</div>
-						<div class="form_field mdl-textfield">
-							<input id="rfidInputText" class="mdl-textfield__input" type="text" id="rfid">
-							<label class="mdl-textfield__floating-label" for="user">Employee RFID</label>
-						</div>
-						<div class="webcam">
-						<div id="webcam"></div>
-					</div>
-					<img id="picture"/>
-					</div>
-						<div>
-							<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" id="btn_Take" onclick="base64_toimage()">
-  							Take Picture
-							</button>
-							<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" id="btn_Remove" onclick="removePhoto()">
-  							Remove Picture
-							</button>
-						</div>
-						<div>
-
-					<div>
-					<button class="add_fab mdl-button mdl-js-button mdl-button--fab mdl-button--colored" id="EditEmployee"><i class="material-icons">save</i></button>
-
-				</div> </main> </div>
+        $(document).ready(function () {
+            $("#EmployeesList").click(function () {
+                document.location.href = "index.html";
+            });
 
 
+            $("#webcam").scriptcam({
+                showMicrophoneErrors: false,
+                onError: onError,
+                cornerRadius: 20,
+                disableHardwareAcceleration: 1,
+                cornerColor: 'e3e5e2',
+                onWebcamReady: onWebcamReady,
+                uploadImage: 'upload.gif',
+                onPictureAsBase64: base64_tofield_and_image
+            });
+
+            $("#AddEmployee").click(function () {
+                //get input fields
+                var rfid = $("#rfidInputText").val();
+                var name = $("#nameInputText").val();
+                var surname = $("#surnameInputText").val();
+
+                if (rfid == "" || name == "" || surname == "" || photo == "") {
+                    alert("Please, fill all fileds");
+                    return;
+                }
+
+                //alert(rfid + " " + name + " " + surname);
+                var jsonRequest = {
+                    employee: {
+                        rfid: rfid,
+                        name: name,
+                        surname: surname
+                    },
+                    photo: photo
+                }
+
+                //ajax call
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://localhost:8008/DEMOService/employees/' + rfid,
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(jsonRequest),
+                    dataType: 'json',
+                    success: function (data) {
+                        var json = JSON.parse(JSON.stringify(data));
+                        if (json != null) {
+                            if (json.code == 200) {
+                                if (json.message != null)
+                                    alert("success: " + json.message);
+                                else
+                                    alert("success");
+                            } else {
+                                if (json.message != null)
+                                    alert("error: " + json.message);
+                                else
+                                    alert("error");
+                            }
+                        } else {
+                            alert("error");
+                        }
+
+                        document.location.href = "index.html";
+                    },
+                    error: function (result) {
+                        alert("Error");
+                        document.location.href = "index.html";
+                    }
+                });
+
+            });
+        });
+        function base64_tofield() {
+            $('#formfield').val($.scriptcam.getFrameAsBase64());
+        }
+        ;
+        function base64_toimage() {
+            photo = $.scriptcam.getFrameAsBase64();
+            $('#picture').attr("src", "data:image/png;base64," + photo);
+            $('#webcam').css("display", "none");
+            $('#btn_Take').css("display", "none");
+            $('#btn_Remove').css("display", "block");
+            $('#picture').css("display", "block");
+        }
+        ;
+        function base64_tofield_and_image(b64) {
+            $('#formfield').val(b64);
+            $('#image').attr("src", "data:image/png;base64," + b64);
+        }
+        ;
+        function changeCamera() {
+            $.scriptcam.changeCamera($('#cameraNames').val());
+        }
+        function onError(errorId, errorMsg) {
+            $("#btn1").attr("disabled", true);
+            $("#btn2").attr("disabled", true);
+            alert(errorMsg);
+        }
+        function onWebcamReady(cameraNames, camera, microphoneNames, microphone, volume) {
+            $('.webcam').attr("width", $('#webcam').width());
+            $('#picture').attr("width", $('#webcam').width());
+        }
+        function removePhoto() {
+            $("#webcam").css("display", "block");
+            $('#btn_Take').css("display", "block");
+            $('#btn_Remove').css("display", "none");
+            $('#picture').css("display", "none");
+        }
+    </script>
+</head>
+<body>
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <button id="EmployeesList" class="mdl-button mdl-js-button mdl-button--icon">
+                <i class="material-icons">arrow_back</i>
+            </button>
+            <span class="mdl-layout-title">Emplooyees</span>
+            <!-- Navigation. We hide it in small screens. -->
+        </div>
+    </header>
+    <main class="mdl-layout__content">
+        <div class="page-content">
+            <!-- Your content goes here -->
+            <div class="form_container">
+                <div class="form_field mdl-textfield">
+                    <input id="nameInputText" class="mdl-textfield__input" type="text" id="name">
+                    <label class="mdl-textfield__floating-label">Employee name</label>
+                </div>
+                <div class="form_field mdl-textfield">
+                    <input id="surnameInputText" class="mdl-textfield__input" type="text" id="surname">
+                    <label class="mdl-textfield__floating-label">Employee surname</label>
+                </div>
+                <div class="form_field mdl-textfield">
+                    <input id="rfidInputText" class="mdl-textfield__input" type="text" id="rfid">
+                    <label class="mdl-textfield__floating-label">Employee RFID</label>
+                </div>
+                <div class="webcam">
+                    <div id="webcam"></div>
+                </div>
+                <img id="picture"/>
+            </div>
+            <div>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" id="btn_Take"
+                        onclick="base64_toimage()">
+                    Take Picture
+                </button>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" id="btn_Remove"
+                        onclick="removePhoto()">
+                    Remove Picture
+                </button>
+            </div>
+            <div>
+                <div>
+                    <button class="add_fab mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
+                            id="AddEmployee"><i class="material-icons">save</i></button>
+
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
 
 
-	</body>
+</body>
 </html>

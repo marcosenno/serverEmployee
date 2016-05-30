@@ -1,51 +1,60 @@
 .body {
-  font-size: 10cm;
-}
-.employees_table{
-  width: 100%;
-  margin: auto;
+    font-size: 10cm;
 }
 
+.employees_table {
+    width: 100%;
+    margin: auto;
+}
+
+#AddEmployee,
 #EditEmployee,
-#AddNewEmployee{
-  float: right;
-  margin: 30px;
+#AddNewEmployee {
+    float: right;
+    margin: 30px;
 }
 
-#webcam{
-  margin: 10px auto;
-  text-align: center;
+#webcam {
+    margin: 10px auto;
+    text-align: center;
 }
 
-div.webcam{
-  text-align: center;
-  margin: 10px auto;
+div.webcam {
+    text-align: center;
+    margin: 10px auto;
 }
 
-#picture{
-  margin: 10px auto;
-  display: none;
+#picture {
+    margin: 10px auto;
+    display: none;
 }
 
-#btn_Remove{ display: none; }
-#btn_Take{ display: block;}
-#btn_Remove, #btn_Take{
-  margin: auto;
-}
-div.mdl-layout__header-row{
-  padding-left: 20px;
+#btn_Remove {
+    display: none;
 }
 
-div.form_container{
-  margin: 20px;
+#btn_Take {
+    display: block;
 }
 
-div.mdl-textfield{
-  display: block;
-  margin: auto;
-  width: 400px;
+#btn_Remove, #btn_Take {
+    margin: auto;
 }
 
-label.mdl-textfield__floating-label{
-  color: #BDBDBD;
+div.mdl-layout__header-row {
+    padding-left: 20px;
+}
+
+div.form_container {
+    margin: 20px;
+}
+
+div.mdl-textfield {
+    display: block;
+    margin: auto;
+    width: 400px;
+}
+
+label.mdl-textfield__floating-label {
+    color: #BDBDBD;
 }
