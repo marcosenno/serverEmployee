@@ -12,6 +12,26 @@
   margin: 30px;
 }
 
+#webcam{
+  margin: 10px auto;
+  text-align: center;
+}
+
+div.webcam{
+  text-align: center;
+  margin: 10px auto;
+}
+
+#picture{
+  margin: 10px auto;
+  display: none;
+}
+
+#btn_Remove{ display: none; }
+#btn_Take{ display: block;}
+#btn_Remove, #btn_Take{
+  margin: auto;
+}
 div.mdl-layout__header-row{
   padding-left: 20px;
 }

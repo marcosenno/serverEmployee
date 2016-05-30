@@ -2,14 +2,17 @@
 <html>
 	<head>
 		<script type="text/javascript" src="jquery-2.2.3.min.js"></script>
-		<script language="JavaScript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+		<script language="JavaScript" src="swfobject.js"></script>
 		<script language="JavaScript" src="scriptcam.js"></script>
 		<link rel="stylesheet" type="text/css" href="css/style.css"
 			media="screen" />
 		<link rel="stylesheet" href="./material.min.css">
 		<script src="./material.min.js"></script>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="css/material_font.css">
 		<script language="JavaScript">
+
+			var photo = "";
+
 			$(document).ready(function() {
 				$("#EmployeesList").click(function(){
 					document.location.href="index.html";
@@ -33,14 +36,20 @@
 					var name = $("#nameInputText").val();
 					var surname = $("#surnameInputText").val();
 
-					if(rfid == "" || name == "" || surname == "") return;
+					if(rfid == "" || name == "" || surname == "" || photo == ""){
+						alert("Please, fill all fileds");
+						 return;
+					 }
 
 					//alert(rfid + " " + name + " " + surname);
 					var jsonRequest = {
-										rfid: rfid,
-										name: name,
-										surname: surname
-									}
+						employee : {
+							rfid: rfid,
+							name: name,
+							surname: surname
+						},
+						photo: photo
+					}
 
 					//ajax call
 					$.ajax({
@@ -81,7 +90,12 @@
 				$('#formfield').val($.scriptcam.getFrameAsBase64());
 			};
 			function base64_toimage() {
-				$('#image').attr("src","data:image/png;base64,"+$.scriptcam.getFrameAsBase64());
+				photo = $.scriptcam.getFrameAsBase64();
+				$('#picture').attr("src","data:image/png;base64,"+photo);
+				$('#webcam').css("display", "none");
+				$('#btn_Take').css("display", "none");
+				$('#btn_Remove').css("display", "block");
+				$('#picture').css("display", "block");
 			};
 			function base64_tofield_and_image(b64) {
 				$('#formfield').val(b64);
@@ -96,10 +110,14 @@
 				alert(errorMsg);
 			}
 			function onWebcamReady(cameraNames,camera,microphoneNames,microphone,volume) {
-				$.each(cameraNames, function(index, text) {
-					$('#cameraNames').append( $('<option></option>').val(index).html(text) )
-				});
-				$('#cameraNames').val(camera);
+				$('.webcam').attr("width", $('#webcam').width());
+				$('#picture').attr("width", $('#webcam').width());
+			}
+			function removePhoto(){
+				$("#webcam").css("display", "block");
+				$('#btn_Take').css("display", "block");
+				$('#btn_Remove').css("display", "none");
+				$('#picture').css("display", "none");
 			}
 		</script>
 	</head>
@@ -131,33 +149,23 @@
 							<input id="rfidInputText" class="mdl-textfield__input" type="text" id="rfid">
 							<label class="mdl-textfield__floating-label" for="user">Employee RFID</label>
 						</div>
-					<div>
-
+						<div class="webcam">
+						<div id="webcam"></div>
+					</div>
+					<img id="picture"/>
+					</div>
 						<div>
-							<!-- TODO: webcam -->
-							<div>
-								<div id="webcam">
-								</div>
-								<div style="margin:5px;">
-									<img src="webcamlogo.png" style="vertical-align:text-top"/>
-									<select id="cameraNames" size="1" onChange="changeCamera()" style="width:245px;font-size:10px;height:25px;">
-									</select>
-								</div>
-							</div>
-							<div>
-								<p><button class="btn btn-small" id="btn1" onclick="base64_tofield()">Snapshot to form</button></p>
-								<p><button class="btn btn-small" id="btn2" onclick="base64_toimage()">Snapshot to image</button></p>
-							</div>
-							<div>
-								<p><textarea id="formfield" style="width:190px;height:70px;"></textarea></p>
-								<p><img id="image" style="width:200px;height:153px;"/></p>
-							</div>
+							<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" id="btn_Take" onclick="base64_toimage()">
+  							Take Picture
+							</button>
+							<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" id="btn_Remove" onclick="removePhoto()">
+  							Remove Picture
+							</button>
 						</div>
+						<div>
 
+					<div>
 					<button class="add_fab mdl-button mdl-js-button mdl-button--fab mdl-button--colored" id="EditEmployee"><i class="material-icons">save</i></button>
-
-
-
 
 				</div> </main> </div>
 

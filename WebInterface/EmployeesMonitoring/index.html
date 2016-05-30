@@ -6,7 +6,7 @@
 <script type="text/javascript" src="jquery-2.2.3.min.js"></script>
 <link rel="stylesheet" href="./material.min.css">
 <script src="./material.min.js"></script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="css/material_font.css">
 <script type="text/javascript">
 $(document).ready(function() {
 	$.ajax({
@@ -28,7 +28,6 @@ $(document).ready(function() {
 	                    	$('<td class="mdl-data-table__cell--non-numeric">').append(json[i].surname),
 	                    	$('<td class="mdl-data-table__cell--non-numeric">').append(
 	                    		$('<a>').attr("id", "EditAnchor").attr("href", "edit.html?rfid=" + json[i].rfid).append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored\"><i class=\"material-icons\">edit</i></button>"),
-	                    		$('<a>').attr("id", "TrainAnchor").attr("href", "train.html?rfid=" + json[i].rfid).append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored\"><i class=\"material-icons\">photo_camera</i></button>"),
 	                    		$('<a>').attr("id", "DeleteAnchor").attr("href", "delete.php?rfid=" + json[i].rfid).append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored\"><i class=\"material-icons\">delete</i></button>")
 	    	                )
 	        			)
