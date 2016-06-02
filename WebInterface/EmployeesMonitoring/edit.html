@@ -19,7 +19,7 @@ function getParameterByName(name, url) {
 }
 
 var rfidUrl = getParameterByName("rfid");
-if(rfidUrl == "" || rfidUrl == null) document.location.href="index.php";
+if(rfidUrl == "" || rfidUrl == null) document.location.href="index.html";
 //alert(rfidUrl);
 
 $(document).ready(function() {
@@ -36,7 +36,7 @@ $(document).ready(function() {
         	if(json != null){
 				if(json.rfid == null || json.name == null || json.surname == null){
 					alert("Rfid doesn't exist");
-					document.location.href="index.php";
+					document.location.href="index.html";
 				}else{
 					$("#rfidInputText").val(json.rfid);
             		$("#nameInputText").val(json.name);

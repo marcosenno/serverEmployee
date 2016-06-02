@@ -19,33 +19,33 @@
                 //ajax call
                 $.ajax({
                     type: 'DELETE',
-                    url: 'http://localhost:8008/DEMOService/employees/'+rfid,
+                    url: 'http://localhost:8008/DEMOService/employees/' + rfid,
                     contentType: 'application/json; charset=utf-8',
                     data: JSON.stringify(jsonRequest),
                     dataType: 'json',
                     success: function (data) {
                         var json = JSON.parse(JSON.stringify(data));
-                        if(json != null){
-                            if(json.code == 200){
-                                if(json.message != null)
+                        if (json != null) {
+                            if (json.code == 200) {
+                                if (json.message != null)
                                     alert("success: " + json.message);
                                 else
                                     alert("success");
-                            }else{
-                                if(json.message != null)
+                            } else {
+                                if (json.message != null)
                                     alert("error: " + json.message);
                                 else
                                     alert("error");
                             }
-                        }else{
+                        } else {
                             alert("error");
                         }
 
-                        document.location.href="index.php";
+                        document.location.href = "index.html";
                     },
                     error: function (result) {
                         alert("Error");
-                        document.location.href="index.php";
+                        document.location.href = "index.html";
                     }
                 });
 
