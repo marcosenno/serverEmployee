@@ -22,6 +22,8 @@ namespace RESTService.Lib
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class RestDemoServices : IRESTDemoServices
     {
+
+
         enum BadgeType { ENTER, EXIT };
         enum ColorType { YELLOW, RED, GREEN };
         private string PATHDIR = "C:\\EmployeePhoto\\openSession";
@@ -29,7 +31,10 @@ namespace RESTService.Lib
         private CascadeClassifier classifier = new CascadeClassifier("haarcascade_frontalface_default.xml");
         private Classifier_Train eigenRecog = new Classifier_Train();
 
-        public ResponseMessage enterBadge(EmployeeBadge e)
+
+
+
+        public  ResponseMessage enterBadge(EmployeeBadge e)
         {
             Debug.WriteLine("enterBadge called");
             DBConnect db = new DBConnect();
@@ -150,9 +155,6 @@ namespace RESTService.Lib
 
 
         }
-
-
-
         private void createDirectories(string rfid)
         {
             if (!Directory.Exists(ROOT + "\\" + rfid))
@@ -164,9 +166,7 @@ namespace RESTService.Lib
 
             }
         }
-
-        // move picture in rfid yellow folder
-        public void concludeSession(string rfid, string session)
+        private  void concludeSession(string rfid, string session)
         {
             createDirectories(rfid); 
             if (File.Exists(PATHDIR + "\\" + session + ".bmp"))
@@ -174,8 +174,7 @@ namespace RESTService.Lib
                     ROOT + "\\" + rfid + "\\" + ColorType.YELLOW.ToString() + "\\" +session + ".bmp");
 
         }
-
-        public string getPictureUri(string rfid, string session)
+        private  string getPictureUri(string rfid, string session)
         {
             DBConnect db = new DBConnect();
             MySqlConnection conn = db.getConnection();
@@ -196,10 +195,7 @@ namespace RESTService.Lib
             conn.Close();
             return ROOT + "\\" + rfid + "\\" +currentColor.ToString() + "\\" + session + ".bmp";
         }
-
-
-
-        public ResponseMessage exitBadge(EmployeeBadge e)
+        public  ResponseMessage exitBadge(EmployeeBadge e)
         {
             Debug.WriteLine("exitBadge called");
             DBConnect db = new DBConnect();
@@ -313,7 +309,6 @@ namespace RESTService.Lib
             else
                 return new ResponseMessage(404, "Face Not found.");
         }
-
         private int getSeconds(EmployeeBadge e)
         {
             Debug.WriteLine("getSeconds called");
@@ -374,14 +369,12 @@ namespace RESTService.Lib
             Debug.WriteLine("calculated seconds: " + secondOfWork.ToString());
             return secondOfWork; 
         }
-
-        public ResponseMessage test(string s, Stream fileStream)
+        public  ResponseMessage test(string s, Stream fileStream)
         {
 
             return new ResponseMessage(200, "stringa ricevuta:" + s);
         }
-
-        public bool facialDetection(string pathpicture)
+        private  bool facialDetection(string pathpicture)
         {
             
             JObject o = new JObject();
@@ -410,13 +403,11 @@ namespace RESTService.Lib
             */
             return rectangles.Length > 0;
         }
-
-        public ResponseMessage test()
+        public  ResponseMessage test()
         {
             return new ResponseMessage(200, "it works.");
         }
-
-        public Employee[] getEmployees()
+        public  Employee[] getEmployees()
         {
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
@@ -448,9 +439,7 @@ namespace RESTService.Lib
 
             return employeeArray.ToArray();
         }
-
-
-        public EmployeePic getInfo(string rfid)
+        public  EmployeePic getInfo(string rfid)
         {
             DBConnect db = new DBConnect();
             MySqlConnection conn = db.getConnection();
@@ -472,8 +461,7 @@ namespace RESTService.Lib
             conn.Close();
             return employee;
         }
-
-        public ResponseMessage changeColor(ChangePicture emp)
+        public  ResponseMessage changeColor(ChangePicture emp)
         {
 
             DBConnect db = new DBConnect();
@@ -515,9 +503,7 @@ namespace RESTService.Lib
             return new ResponseMessage(201, "Unable to change color.");
 
         }
-
-
-        public ColoredPicture[] getPictureColored(string rfid, string color)
+        public  ColoredPicture[] getPictureColored(string rfid, string color)
         {
             List<ColoredPicture> collection = new List<ColoredPicture>(); 
             DBConnect db = new DBConnect();
@@ -544,9 +530,7 @@ namespace RESTService.Lib
             return collection.ToArray(); 
 
         }
-
-
-        public Employee getEmployee(string rfid)
+        public  Employee getEmployee(string rfid)
         {
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
@@ -571,8 +555,7 @@ namespace RESTService.Lib
 
             return e;
         }
-
-        public ResponseMessage addEmployee(string rfid, EmployeePic employee)
+        public  ResponseMessage addEmployee(string rfid, EmployeePic employee)
         {
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
@@ -602,8 +585,7 @@ namespace RESTService.Lib
             return new ResponseMessage(200, employee.employee.name + " " + employee.employee.surname + " added correctly."); 
             
         }
-
-        public ResponseMessage editEmployee(string rfid, Employee employee)
+        public  ResponseMessage editEmployee(string rfid, Employee employee)
         {
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
@@ -623,17 +605,7 @@ namespace RESTService.Lib
             else
                 return new ResponseMessage(500, "Server Error");
         }
-
-        public ResponseMessage editEmployeeOptions(string rfid, Employee employee)
-        {
-            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
-            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
-            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Max-Age", "1728000");
-            return new ResponseMessage(200, "OK");
-        }
-
-        public ResponseMessage deleteEmployee(string rfid)
+        public  ResponseMessage deleteEmployee(string rfid)
         {
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");

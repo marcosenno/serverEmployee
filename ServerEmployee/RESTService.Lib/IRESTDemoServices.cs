@@ -56,10 +56,6 @@ namespace RESTService.Lib
         ResponseMessage editEmployee(string rfid, Employee employee);
 
         [OperationContract]
-        [WebInvoke(Method = "OPTIONS", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "employees/{rfid}")]
-        ResponseMessage editEmployeeOptions(string rfid, Employee employee);
-
-        [OperationContract]
         [WebInvoke(Method = "DELETE", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "employees/{rfid}")]
         ResponseMessage deleteEmployee(string rfid);
 
