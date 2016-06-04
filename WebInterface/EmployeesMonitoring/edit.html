@@ -1,147 +1,152 @@
 <!DOCTYPE unspecified PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="css/style.css"
-	media="screen" />
-<script type="text/javascript" src="jquery-2.2.3.min.js"></script>
-<link rel="stylesheet" href="./material.min.css">
-<script src="./material.min.js"></script>
-<link rel="stylesheet" href="css/material_font.css">
-<script type="text/javascript">
-function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
-
-var rfidUrl = getParameterByName("rfid");
-if(rfidUrl == "" || rfidUrl == null) document.location.href="index.php";
-//alert(rfidUrl);
-
-$(document).ready(function() {
-
-	$.ajax({
-        type: 'GET',
-        url: 'http://localhost:8008/DEMOService/employees/'+rfidUrl,
-        //data: { get_param: 'value' },
-        dataType: 'json',
-        success: function (data) {
-        	//alert("Success: " + data['code'] + " " + data['message'] + "JSON is: " + JSON.stringify(data));
-        	var json = JSON.parse(JSON.stringify(data));
-
-        	if(json != null){
-				if(json.rfid == null || json.name == null || json.surname == null){
-					alert("Rfid doesn't exist");
-					document.location.href="index.php";
-				}else{
-					$("#rfidInputText").val(json.rfid);
-            		$("#nameInputText").val(json.name);
-            		$("#surnameInputText").val(json.surname);
-				}
-			}else{
-				alert("error");
-			}
-        },
-        error: function (result) {
-            alert("Error");
+    <link rel="stylesheet" type="text/css" href="css/style.css"
+          media="screen"/>
+    <script type="text/javascript" src="jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="./material.min.css">
+    <script src="./material.min.js"></script>
+    <link rel="stylesheet" href="css/material_font.css">
+    <script type="text/javascript">
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
         }
-    });
 
-	$("#EmployeesList").click(function(){
-		document.location.href="index.html";
-	});
+        var rfidUrl = getParameterByName("rfid");
+        if (rfidUrl == "" || rfidUrl == null) document.location.href = "index.html";
+        //alert(rfidUrl);
 
-	$("#EditEmployee").click(function(){
-		//get input fields
-		var rfid = $("#rfidInputText").val();
-		var name = $("#nameInputText").val();
-		var surname = $("#surnameInputText").val();
+        $(document).ready(function () {
 
-		if(rfid == "" || name == "" || surname == "") return;
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8008/DEMOService/employees/' + rfidUrl,
+                //data: { get_param: 'value' },
+                dataType: 'json',
+                success: function (data) {
+                    //alert("Success: " + data['code'] + " " + data['message'] + "JSON is: " + JSON.stringify(data));
+                    var json = JSON.parse(JSON.stringify(data));
 
-		//alert(rfid + " " + name + " " + surname);
+                    if (json != null) {
+                        if (json.rfid == null || json.name == null || json.surname == null) {
+                            alert("Rfid doesn't exist");
+                            document.location.href = "index.html";
+                        } else {
+                            $("#rfidInputText").val(json.rfid);
+                            $("#nameInputText").val(json.name);
+                            $("#surnameInputText").val(json.surname);
+                        }
+                    } else {
+                        alert("error");
+                    }
+                },
+                error: function (result) {
+                    alert("Error");
+                }
+            });
 
-		var jsonRequest = {
-							rfid: rfid,
-							name: name,
-							surname: surname
-						}
+            $("#EmployeesList").click(function () {
+                document.location.href = "index.html";
+            });
 
-		//ajax call
-		$.ajax({
-	        type: 'PUT',
-	        url: 'http://192.168.2.200:8008/DEMOService/employees/'+rfid,
-	        contentType: 'application/json; charset=utf-8',
-	        data: JSON.stringify(jsonRequest),
-	        dataType: 'json',
-	        success: function (data) {
-	        	var json = JSON.parse(JSON.stringify(data));
-				if(json != null){
-					if(json.code == 200){
-						if(json.message != null)
-							alert("Success, Employee Modified: " + json.message);
-						else
-							alert("Success, Employee Modified");
-					}else{
-						if(json.message != null)
-							alert("Error: " + json.message);
-						else
-							alert("Error");
-					}
-				}else{
-					alert("Error, impossible to contact the Web Service");
-				}
+            $("#EditEmployee").click(function () {
+                //get input fields
+                var rfid = $("#rfidInputText").val();
+                var name = $("#nameInputText").val();
+                var surname = $("#surnameInputText").val();
 
-				document.location.href="index.html";
-	        },
-	        error: function (result) {
-	            alert("Error, impossible to contact the Web Service");
-	            document.location.href="index.html";
-	        }
-	    });
+                if (rfid == "" || name == "" || surname == "") return;
 
-	});
-});
+                //alert(rfid + " " + name + " " + surname);
 
-		</script>
+                var jsonRequest = {
+                    rfid: rfid,
+                    name: name,
+                    surname: surname
+                }
+
+                //ajax call
+                $.ajax({
+                    type: 'PUT',
+                    url: 'http://192.168.2.200:8008/DEMOService/employees/' + rfid,
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(jsonRequest),
+                    dataType: 'json',
+                    success: function (data) {
+                        var json = JSON.parse(JSON.stringify(data));
+                        if (json != null) {
+                            if (json.code == 200) {
+                                if (json.message != null)
+                                    alert("Success, Employee Modified: " + json.message);
+                                else
+                                    alert("Success, Employee Modified");
+                            } else {
+                                if (json.message != null)
+                                    alert("Error: " + json.message);
+                                else
+                                    alert("Error");
+                            }
+                        } else {
+                            alert("Error, impossible to contact the Web Service");
+                        }
+
+                        document.location.href = "index.html";
+                    },
+                    error: function (result) {
+                        alert("Error, impossible to contact the Web Service");
+                        document.location.href = "index.html";
+                    }
+                });
+
+            });
+        });
+
+    </script>
 </head>
 <body>
 
-	<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-		<header class="mdl-layout__header">
-			<div class="mdl-layout__header-row">
-				<!-- Title -->
-				<button id="EmployeesList" class="mdl-button mdl-js-button mdl-button--icon">
-  <i class="material-icons">arrow_back</i>
-</button>
-				<span class="mdl-layout-title">Emplooyees</span>
-				<!-- Navigation. We hide it in small screens. -->
-			</div>
-		</header>
-		<main class="mdl-layout__content">
-			<div class="page-content">
-				<!-- Your content goes here -->
-				<div class="form_container">
-				<div class="form_field mdl-textfield">
-	  			<input id="nameInputText" class="mdl-textfield__input" type="text" id="name">
-	  			<label class="mdl-textfield__floating-label" for="user">Employee name</label>
-				</div>
-				<div class="form_field mdl-textfield">
-	  			<input id="surnameInputText" class="mdl-textfield__input" type="text" id="surname">
-	  			<label class="mdl-textfield__floating-label" for="user">Employee surname</label>
-				</div>
-				<div class="form_field mdl-textfield">
-	  			<input id="rfidInputText" class="mdl-textfield__input" type="text" id="rfid">
-	  			<label class="mdl-textfield__floating-label" for="user">Employee RFID</label>
-				</div>
-<div>
-				<button class="add_fab mdl-button mdl-js-button mdl-button--fab mdl-button--colored" id="EditEmployee"><i class="material-icons">save</i></button>
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <button id="EmployeesList" class="mdl-button mdl-js-button mdl-button--icon">
+                <i class="material-icons">arrow_back</i>
+            </button>
+            <span class="mdl-layout-title">Emplooyees</span>
+            <!-- Navigation. We hide it in small screens. -->
+        </div>
+    </header>
+    <main class="mdl-layout__content">
+        <div class="page-content">
+            <!-- Your content goes here -->
+            <div class="form_container">
+                <div class="form_field mdl-textfield">
+                    <input id="nameInputText" class="mdl-textfield__input" type="text">
+                    <label class="mdl-textfield__floating-label" for="nameInputText">Employee name</label>
+                </div>
+                <div class="form_field mdl-textfield">
+                    <input id="surnameInputText" class="mdl-textfield__input" type="text">
+                    <label class="mdl-textfield__floating-label" for="surnameInputText">Employee surname</label>
+                </div>
+                <div class="form_field mdl-textfield">
+                    <input id="rfidInputText" class="mdl-textfield__input" type="text">
+                    <label class="mdl-textfield__floating-label" for="rfidInputText">Employee RFID</label>
+                </div>
+                <div>
+                    <button class="add_fab mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
+                            id="EditEmployee"><i class="material-icons">save</i></button>
 
-			</div> </main> </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
 
 </body>
 </html>
