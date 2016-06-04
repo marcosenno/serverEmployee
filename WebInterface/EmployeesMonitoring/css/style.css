@@ -41,18 +41,80 @@ div.webcam {
     margin: auto;
 }
 
+button.btn_clear:hover,
+button.btn_clear{
+    background: red;
+}
+
+button.btn_check:hover,
+button.btn_check{
+    background: green;
+}
+
+#employee_info{
+    display: block;
+}
+
 div.mdl-layout__header-row {
     padding-left: 20px;
 }
 
 div.form_container {
     margin: 20px;
+    float: left;
+}
+
+div.picture {
+    float: left;
+    margin: 20px;
+    width: 30%;
+    height: 261px;
+    padding: auto;
+}
+
+div.picture > img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+div.picture_to_color{
+    float: left;
+    margin: 20px;
+    width: 25%;
+    height: 250px;
+    text-align: center;
+}
+
+div.picture_to_color > img {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    margin: 3px 0;
+}
+
+div.picture_to_color > button{
+    display: inline-block;
+    color: white;
+    margin: 0 3px;
 }
 
 div.mdl-textfield {
     display: block;
     margin: auto;
     width: 400px;
+}
+
+img.YELLOW_photo{
+    border: 3px solid yellow;
+}
+
+img.RED_photo{
+    border: 3px solid darkred;
+}
+
+img.GREEN_photo{
+    border: 3px solid darkgreen;
 }
 
 label.mdl-textfield__floating-label {
