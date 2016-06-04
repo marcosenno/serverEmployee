@@ -23,6 +23,7 @@ namespace RESTService.Lib
     public class RestDemoServices : IRESTDemoServices
     {
         enum BadgeType { ENTER, EXIT };
+        enum ColorType { YELLOW, RED, GREEN };
         private string PATHDIR = "C:\\EmployeePhoto\\openSession";
         private string ROOT = "C:\\EmployeePhoto";
         private CascadeClassifier classifier = new CascadeClassifier("haarcascade_frontalface_default.xml");
@@ -116,31 +117,84 @@ namespace RESTService.Lib
             conn.Close();
 
             concludeSession(e.rfid, e.session);
+            db = new DBConnect();
+            conn = db.getConnection();
+            cmd2 = new MySqlCommand();
+            cmd2.Connection = conn;
+            cmd2.CommandText = "INSERT INTO colors(session_id,rfid,color) VALUES(?a,?b,?c)";
+            cmd2.Parameters.Add("?a", MySqlDbType.VarChar).Value = e.session;
+            cmd2.Parameters.Add("?b", MySqlDbType.VarChar).Value = e.rfid;
+            cmd2.Parameters.Add("?c", MySqlDbType.Enum).Value = ColorType.YELLOW; 
+            try
+            {
+                cmd2.ExecuteNonQuery();
+            }
+            catch (MySqlException ex)
+            {
+                Debug.WriteLine("Insertion execution failed, error code: " + ex.Number);
+            }
+            conn.Close();
+
+
+
             if (facialDetection(getPictureUri(e.rfid, e.session)))
             {
                 Debug.WriteLine("Face succesfully detected");
                 return new ResponseMessage(200, "Welcome " + name + " " + surname);
             }
             else
+            {
                 Debug.WriteLine("Face not detected");
                 return new ResponseMessage(404, "Face Not found.");
+            }
 
 
         }
 
-        // sposta la foto nella cartella dell rfid corretto
-        public void concludeSession(string rfid, string session)
+
+
+        private void createDirectories(string rfid)
         {
             if (!Directory.Exists(ROOT + "\\" + rfid))
+            {
                 Directory.CreateDirectory(ROOT + "\\" + rfid);
+                Directory.CreateDirectory(ROOT + "\\" + rfid + "\\" + ColorType.YELLOW.ToString());
+                Directory.CreateDirectory(ROOT + "\\" + rfid + "\\" + ColorType.RED.ToString());
+                Directory.CreateDirectory(ROOT + "\\" + rfid + "\\" + ColorType.GREEN.ToString());
+
+            }
+        }
+
+        // move picture in rfid yellow folder
+        public void concludeSession(string rfid, string session)
+        {
+            createDirectories(rfid); 
             if (File.Exists(PATHDIR + "\\" + session + ".bmp"))
-                File.Move(PATHDIR + "\\" + session + ".bmp", ROOT + "\\" + rfid + "\\" + session + ".bmp");
+                File.Move(PATHDIR + "\\" + session + ".bmp", 
+                    ROOT + "\\" + rfid + "\\" + ColorType.YELLOW.ToString() + "\\" +session + ".bmp");
 
         }
 
         public string getPictureUri(string rfid, string session)
         {
-            return ROOT + "\\" + rfid + "\\" + session + ".bmp";
+            DBConnect db = new DBConnect();
+            MySqlConnection conn = db.getConnection();
+            string query = "SELECT * FROM colors where session_id='" + session + "' and rfid='"+rfid+"'";
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            ColorType currentColor; 
+            if (dataReader.Read())
+            {
+                 currentColor = (ColorType) dataReader["color"];
+            }
+            else
+            {
+                conn.Close();
+                return null; 
+            }
+
+            conn.Close();
+            return ROOT + "\\" + rfid + "\\" +currentColor.ToString() + "\\" + session + ".bmp";
         }
 
 
@@ -395,6 +449,103 @@ namespace RESTService.Lib
             return employeeArray.ToArray();
         }
 
+
+        public EmployeePic getInfo(string rfid)
+        {
+            DBConnect db = new DBConnect();
+            MySqlConnection conn = db.getConnection();
+            string query = "SELECT * FROM user where rfid='" + rfid + "'";
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            EmployeePic employee = new EmployeePic();
+            employee.employee = new Employee();
+            if (dataReader.Read())
+            {
+                employee.employee.rfid = dataReader["rfid"].ToString();
+                employee.employee.name = dataReader["name"].ToString();
+                employee.employee.surname = dataReader["surname"].ToString();
+                string path = ROOT + "\\" + rfid + "\\" + rfid + ".bmp";
+                string base64picture = Convert.ToBase64String(File.ReadAllBytes(path));
+                employee.picture = base64picture;
+            }
+
+            conn.Close();
+            return employee;
+        }
+
+        public ResponseMessage changeColor(ChangePicture emp)
+        {
+
+            DBConnect db = new DBConnect();
+            MySqlConnection conn = db.getConnection();
+            string query = "SELECT * FROM colors where rfid='" + emp.rfid + "' and session_id='" + emp.session_id + "';";
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            string oldcolor = ""; 
+            while (dataReader.Read())
+            {
+                oldcolor = dataReader["color"].ToString(); 
+
+            }
+            conn.Close();
+
+            if (oldcolor != "")
+            {
+                db = new DBConnect();
+                conn = db.getConnection();
+                query = "UPDATE `colors` SET `color`='" + emp.color + "' WHERE `session_id`='" + emp.session_id + "' and `rfid`='" + emp.rfid + "';";
+                cmd = new MySqlCommand(query, conn);
+                int row = cmd.ExecuteNonQuery();
+                if (row == 1)
+                {
+                    File.Move(ROOT + "\\" + emp.rfid + "\\" + oldcolor + "\\" + emp.session_id + ".bmp",
+                        ROOT + "\\" + emp.rfid + "\\" + emp.color + "\\" + emp.session_id + ".bmp");
+                    conn.Close();
+                    return new ResponseMessage(200, "Color updated for " + emp.session_id);
+
+                }
+                else
+                {
+                    conn.Close();
+                    return new ResponseMessage(201, "Unable to change color.");
+                }
+
+
+            }
+            return new ResponseMessage(201, "Unable to change color.");
+
+        }
+
+
+        public ColoredPicture[] getPictureColored(string rfid, string color)
+        {
+            List<ColoredPicture> collection = new List<ColoredPicture>(); 
+            DBConnect db = new DBConnect();
+            MySqlConnection conn = db.getConnection();
+            string query = "SELECT * FROM colors where rfid='" + rfid + "' and color='"+color+"';";
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            while(dataReader.Read())
+            {
+                string gotrfid = dataReader["rfid"].ToString();
+                string gotsession = dataReader["session_id"].ToString();
+                string gotcolor = dataReader["color"].ToString();
+                string pathpicture = ROOT + "\\" + gotrfid + "\\" + gotcolor + "\\" + gotsession + ".bmp";
+                string base64picture = Convert.ToBase64String(File.ReadAllBytes(pathpicture));
+                ColoredPicture toret = new ColoredPicture();
+                toret.session_id = gotsession;
+                toret.rfid = gotrfid;
+                toret.picture = base64picture;
+                collection.Add(toret); 
+                
+            }
+            conn.Close();
+
+            return collection.ToArray(); 
+
+        }
+
+
         public Employee getEmployee(string rfid)
         {
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
@@ -429,16 +580,20 @@ namespace RESTService.Lib
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Max-Age", "1728000");
 
             try{
+            createDirectories(rfid); 
             byte[] pict = Convert.FromBase64String(employee.picture);
+            string pictName = employee.employee.rfid;
+            
+            string path = ROOT + "\\" + rfid + "\\" + pictName+ ".bmp";
+            File.WriteAllBytes(path, pict);
             DBConnect db = new DBConnect(); 
             MySqlConnection conn = db.getConnection();
             MySqlCommand cmd2 = new MySqlCommand();
             cmd2.Connection = conn;
-            cmd2.CommandText = "INSERT INTO `user`(`rfid`, `name`, `surname`, `photo`) VALUES (?a,?b,?c,?d);";
+            cmd2.CommandText = "INSERT INTO `user`(`rfid`, `name`, `surname`) VALUES (?a,?b,?c);";
             cmd2.Parameters.Add("?a", MySqlDbType.VarChar).Value = employee.employee.rfid;
             cmd2.Parameters.Add("?b", MySqlDbType.VarChar).Value = employee.employee.name;
             cmd2.Parameters.Add("?c", MySqlDbType.VarChar).Value = employee.employee.surname;
-            cmd2.Parameters.Add("?d", MySqlDbType.Blob).Value = pict; 
             cmd2.ExecuteNonQuery();
             conn.Close(); 
             }catch(Exception e){

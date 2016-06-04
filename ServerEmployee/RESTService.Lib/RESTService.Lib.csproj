@@ -94,6 +94,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classifier_Train.cs" />
+    <Compile Include="ColoredPicture.cs" />
+    <Compile Include="ChangePicture.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DBConnect.cs" />
     <Compile Include="Employee.cs" />

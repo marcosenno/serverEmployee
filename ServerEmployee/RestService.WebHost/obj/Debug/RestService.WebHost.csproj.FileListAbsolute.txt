@@ -50,3 +50,7 @@ C:\Users\swipe\Desktop\git\server\ServerEmployee\RestService.WebHost\bin\Newtons
 C:\Users\swipe\Desktop\git\server\ServerEmployee\RestService.WebHost\obj\Debug\RestService.WebHost.csprojResolveAssemblyReference.cache
 C:\Users\swipe\Desktop\git\server\ServerEmployee\RestService.WebHost\obj\Debug\RestService.WebHost.dll
 C:\Users\swipe\Desktop\git\server\ServerEmployee\RestService.WebHost\obj\Debug\RestService.WebHost.pdb
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RestService.WebHost\bin\Emgu.CV.Contrib.xml
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RestService.WebHost\bin\Emgu.CV.xml
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RestService.WebHost\bin\Emgu.Util.xml
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RestService.WebHost\bin\Emgu.CV.Cuda.xml
