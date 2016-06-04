@@ -81,3 +81,7 @@ C:\Users\Joonas\Documents\GitHub\serverEmployee\ServerEmployee\RESTService.Host\
 C:\Users\Joonas\Documents\GitHub\serverEmployee\ServerEmployee\RESTService.Host\bin\Debug\RESTService.Lib.pdb
 C:\Users\Joonas\Documents\GitHub\serverEmployee\ServerEmployee\RESTService.Host\bin\Debug\Newtonsoft.Json.xml
 C:\Users\Joonas\Documents\GitHub\serverEmployee\ServerEmployee\RESTService.Host\obj\x86\Debug\RESTService.Host.csprojResolveAssemblyReference.cache
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\Emgu.CV.Contrib.xml
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\Emgu.CV.xml
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\Emgu.Util.xml
+C:\Users\swipe\Desktop\git\server\ServerEmployee\RESTService.Host\bin\Debug\Emgu.CV.Cuda.xml
