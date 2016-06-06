@@ -14,6 +14,7 @@ using System.Threading;
 using System.Xml.Serialization;
 using System.Drawing.Imaging;
 using Emgu.CV.Face;
+using System.Diagnostics;
 
 namespace RESTService.Lib
 {
@@ -63,7 +64,8 @@ namespace RESTService.Lib
         /// <param name="Training_Folder"></param>
         public Classifier_Train(string Training_Folder)
         {
-            _IsTrained = LoadTrainingData(Training_Folder);
+            trainedFacesFolder = Training_Folder;
+            _IsTrained = LoadTrainingData(trainedFacesFolder);
         }
         #endregion
 
@@ -116,6 +118,7 @@ namespace RESTService.Lib
                 {
                     Eigen_label = Rfid_List[ER.Label];
                     Eigen_Distance = (float)ER.Distance;
+                    Debug.WriteLine("DISTANCE: "+Eigen_Distance);
                     if (Eigen_Thresh > -1) Eigen_threshold = Eigen_Thresh;
 
                     //if (trainingImages.Count() < 30) return Eigen_label;
@@ -216,17 +219,6 @@ namespace RESTService.Lib
                     }
                 }
 
-                if (Directory.Exists(trainedFacesFolder))
-                {
-                    //photo.Save(trainedFacesFolder + "/" + fileName, ImageFormat.Jpeg);
-                    photo.Save(trainedFacesFolder + "/" + fileName);
-                }
-                else
-                {
-                    Directory.CreateDirectory(trainedFacesFolder);
-                    //photo.Save(trainedFacesFolder + "/" + fileName, ImageFormat.Jpeg);
-                    photo.Save(trainedFacesFolder + "/" + fileName);
-                }
                 if (File.Exists(trainedFacesFolder + "/TrainedLabels.xml"))
                 {
                     XmlDocument docu = new XmlDocument();

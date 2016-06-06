@@ -24,6 +24,7 @@
         var color = getParameterByName("color");
         var name;
         var surname;
+        alert(color+" "+rfidUrl); 
 
 
         function modifyColor(jsonRequest, id) {
@@ -104,7 +105,7 @@
                             $("#nameInputText").val(name);
                             surname = json.employee.surname;
                             $("#surnameInputText").val(surname);
-                            $("#picture").append(
+                            $("#picture_info").append(
                                     $('<img>').attr("src", "data:image/png;base64," + json.picture));
                         }
                     } else {
@@ -135,7 +136,6 @@
 
                         var photo = json[i].picture;
                         var id_s = json[i].session_id;
-
                         $("#photos").append(
                                 $("<div class=\"picture_to_color\">").attr("id", id_s).append(
                                         $('<img>').attr("class", color + "_photo").attr("src", "data:image/png;base64," + photo),
@@ -175,7 +175,7 @@
         <div class="page-content">
             <!-- Your content goes here -->
             <div class="employee_info">
-                <div class="picture">
+                <div id="picture_info" class="picture">
 
                 </div>
                 <div class="form_container">
