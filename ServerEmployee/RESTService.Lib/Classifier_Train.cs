@@ -87,7 +87,7 @@ namespace RESTService.Lib
         }
 
         /// <summary>
-        /// <para>Return(True): If Training data has been located and Eigen Recogniser has been trained</para>
+        /// <para>Return(True): If Training data has been located and Eigen Recognizer has been trained</para>
         /// <para>Return(False): If NO Training data has been located of error in training has occured</para>
         /// </summary>
         public bool IsTrained
@@ -96,11 +96,11 @@ namespace RESTService.Lib
         }
 
         /// <summary>
-        /// Recognise a Grayscale Image using the trained Eigen Recogniser
+        /// Recognize a Grayscale Image using the trained Eigen Recognizer
         /// </summary>
         /// <param name="Input_image"></param>
         /// <returns></returns>
-        public string Recognise(Image<Gray, byte> Input_image, int Eigen_Thresh = -1)
+        public string Recognize(Image<Gray, byte> Input_image, int Eigen_Thresh = -1)
         {
             if (_IsTrained)
             {
@@ -117,6 +117,8 @@ namespace RESTService.Lib
                     Eigen_label = Rfid_List[ER.Label];
                     Eigen_Distance = (float)ER.Distance;
                     if (Eigen_Thresh > -1) Eigen_threshold = Eigen_Thresh;
+
+                    //if (trainingImages.Count() < 30) return Eigen_label;
 
                     //Only use the post threshold rule if we are using an Eigen Recognizer 
                     //since Fisher and LBHP threshold set during the constructor will work correctly 
@@ -136,7 +138,7 @@ namespace RESTService.Lib
         }
 
         /// <summary>
-        /// Sets the threshold confidence value for string Recognise(Image<Gray, byte> Input_image) to be used.
+        /// Sets the threshold confidence value for string Recognize(Image<Gray, byte> Input_image) to be used.
         /// </summary>
         public int Set_Eigen_Threshold
         {
@@ -149,7 +151,7 @@ namespace RESTService.Lib
         }
 
         /// <summary>
-        /// Returns a string containg the recognised persons name
+        /// Returns a string containg the Recognized persons name
         /// </summary>
         public string Get_Eigen_Label
         {
@@ -194,7 +196,7 @@ namespace RESTService.Lib
         /// <summary>
         /// Add Training Image with a specific rfid
         /// </summary>
-        public bool AddTrainingImage(Image<Gray, Byte> photo, string rfid)
+        public bool AddTrainingImage(Image<Gray, byte> photo, string rfid)
         {
             try
             {
@@ -366,10 +368,10 @@ namespace RESTService.Lib
                         //--------------------------------------------------------------------------------------------------------------------------------------
                         //Eigen Uses
                         //          0 - X = unknown
-                        //          > X = Recognised
+                        //          > X = Recognized
                         //
                         //Fisher and LBPH Use
-                        //          0 - X = Recognised
+                        //          0 - X = Recognized
                         //          > X = Unknown
                         //
                         // Where X = Threshold value
@@ -389,7 +391,7 @@ namespace RESTService.Lib
                                 break;
                         }
 
-                        recognizer.Train(trainingImages.ToArray(), Rfid_List_ID.ToArray());
+                        recognizer.Train<Gray, byte>(trainingImages.ToArray(), Rfid_List_ID.ToArray());
                         // Recognizer_Type = recognizer.GetType();
                         // string v = recognizer.ToString(); //EMGU.CV.FisherFaceRecognizer || EMGU.CV.EigenFaceRecognizer || EMGU.CV.LBPHFaceRecognizer
 

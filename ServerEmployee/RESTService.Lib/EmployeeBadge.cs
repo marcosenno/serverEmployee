@@ -10,6 +10,6 @@ namespace RESTService.Lib
     {
         public string rfid { get; set; }
         public string session { get; set; }
-
+        public Boolean faceRecognition { get; set; }
     }
 }
