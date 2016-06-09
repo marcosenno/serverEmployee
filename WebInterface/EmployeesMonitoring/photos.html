@@ -9,154 +9,151 @@
     <link rel="stylesheet" href="css/material_font.css">
 
     <script type="text/javascript">
-        function getParameterByName(name, url) {
-            if (!url) url = window.location.href;
-            name = name.replace(/[\[\]]/g, "\\$&");
-            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-                    results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, " "));
-        }
+         function getParameterByName(name, url) {
+             if (!url) url = window.location.href;
+             name = name.replace(/[\[\]]/g, "\\$&");
+             var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                     results = regex.exec(url);
+             if (!results) return null;
+             if (!results[2]) return '';
+             return decodeURIComponent(results[2].replace(/\+/g, " "));
+         }
 
 
-        var rfidUrl = getParameterByName("rfid");
-        var color = getParameterByName("color");
-        var name;
-        var surname;
-        alert(color+" "+rfidUrl); 
+         var rfidUrl = getParameterByName("rfid");
+         var color = getParameterByName("color");
+         var name;
+         var surname;
+
+         function modifyColor(jsonRequest, id) {
+
+             $.ajax({
+                 type: 'POST',
+                 url: 'http://localhost:8008/DEMOService/changecolor',
+                 contentType: 'application/json; charset=utf-8',
+                 data: JSON.stringify(jsonRequest),
+                 dataType: 'json',
+                 success: function (data) {
+                     var json = JSON.parse(JSON.stringify(data));
+                     if (json != null) {
+                         if (json.code == 200) {
+                             $('#' + id).fadeOut();
+                         } else {
+                             if (json.message != null)
+                                 alert("error: " + json.message);
+                             else
+                                 alert("error");
+                         }
+                     } else {
+                         alert("Impossible to set color now");
+                     }
+                 },
+                 error: function (result) {
+                     alert("Impossible to set color now");
+                 }
+             });
 
 
-        function modifyColor(jsonRequest, id) {
+         }
 
-            $.ajax({
-                type: 'POST',
-                url: 'http://localhost:8008/DEMOService/changecolor',
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify(jsonRequest),
-                dataType: 'json',
-                success: function (data) {
-                    var json = JSON.parse(JSON.stringify(data));
-                    if (json != null) {
-                        if (json.code == 200) {
-                            $('#' + id).fadeOut();
-                        } else {
-                            if (json.message != null)
-                                alert("error: " + json.message);
-                            else
-                                alert("error");
-                        }
-                    } else {
-                        alert("Impossible to set color now");
-                    }
-                },
-                error: function (result) {
-                    alert("Impossible to set color now");
-                }
-            });
+         function checkPhoto(id) {
+             $('#' + id + '> img').attr("class", "GREEN_photo");
 
+             var jsonRequest = {
+                 rfid: rfidUrl,
+                 session_id: id,
+                 color: "GREEN"
+             };
 
-        }
+             modifyColor(jsonRequest, id);
+         }
 
-        function checkPhoto(id) {
-            $('#' + id + '> img').attr("class", "GREEN_photo");
+         function clearPhoto(id) {
+             $('#' + id + '> img').attr("class", "RED_photo");
 
-            var jsonRequest = {
-                rfid: rfidUrl,
-                session_id: id,
-                color: "GREEN"
-            };
+             var jsonRequest = {
+                 rfid: rfidUrl,
+                 session_id: id,
+                 color: "GREEN"
+             };
 
-            modifyColor(jsonRequest, id);
-        }
+             modifyColor(jsonRequest, id);
 
-        function clearPhoto(id) {
-            $('#' + id + '> img').attr("class", "RED_photo");
-
-            var jsonRequest = {
-                rfid: rfidUrl,
-                session_id: id,
-                color: "GREEN"
-            };
-
-            modifyColor(jsonRequest, id);
-
-        }
+         }
 
 
-        if (rfidUrl == null || rfidUrl == "" || color == null || color == "") document.location.href = "index.html";
+         if (rfidUrl == null || rfidUrl == "" || color == null || color == "") document.location.href = "index.html";
 
-        $(document).ready(function () {
+         $(document).ready(function () {
 
-            $.ajax({
-                type: 'GET',
-                url: 'http://localhost:8008/DEMOService/getinfo/' + rfidUrl,
-                dataType: 'json',
-                success: function (data) {
-                    var json = JSON.parse(JSON.stringify(data));
+             $.ajax({
+                 type: 'GET',
+                 url: 'http://localhost:8008/DEMOService/getinfo/' + rfidUrl,
+                 dataType: 'json',
+                 success: function (data) {
+                     var json = JSON.parse(JSON.stringify(data));
 
-                    if (json != null) {
-                        if (json.employee.rfid == null || json.employee.name == null || json.employee.surname == null || json.picture == null ) {
-                            alert("Rfid doesn't exist");
-                            document.location.href = "index.html";
-                        } else {
-                            $("#rfidInputText").val(json.employee.rfid);
-                            name = json.employee.name;
-                            $("#nameInputText").val(name);
-                            surname = json.employee.surname;
-                            $("#surnameInputText").val(surname);
-                            $("#picture_info").append(
-                                    $('<img>').attr("src", "data:image/png;base64," + json.picture));
-                        }
-                    } else {
-                        alert("error");
-                    }
-                },
-                error: function (result) {
-                    alert("Error");
-                }
-            });
+                     if (json != null) {
+                         if (json.employee.rfid == null || json.employee.name == null || json.employee.surname == null || json.picture == null ) {
+                             alert("Rfid doesn't exist");
+                             document.location.href = "index.html";
+                         } else {
+                             $("#rfidInputText").val(json.employee.rfid);
+                             name = json.employee.name;
+                             $("#nameInputText").val(name);
+                             surname = json.employee.surname;
+                             $("#surnameInputText").val(surname);
+                             $("#picture_info").append(
+                                     $('<img>').attr("src", "data:image/png;base64," + json.picture));
+                         }
+                     } else {
+                         alert("Error in GetInfo");
+                     }
+                 },
+                 error: function (result) {
+                     alert("Error function in GetInfo");
+                 }
+             });
 
-            $("#EmployeesList").click(function () {
-                document.location.href = "index.html";
-            });
+             $("#EmployeesList").click(function () {
+                 document.location.href = "index.html";
+             });
 
-            $("#title").text(color + " photos of " + name + " " + surname);
-
-
-            $.ajax({
-                type: 'GET',
-                url: 'http://localhost:8008/DEMOService/' + rfidUrl + '/' + color,
-                dataType: 'json',
-                success: function (data) {
-                    var json = JSON.parse(JSON.stringify(data));
-
-                    for (var i = 0; json.length; i++) {
-                        if (json[i] == null) break;
-
-                        var photo = json[i].picture;
-                        var id_s = json[i].session_id;
-                        $("#photos").append(
-                                $("<div class=\"picture_to_color\">").attr("id", id_s).append(
-                                        $('<img>').attr("class", color + "_photo").attr("src", "data:image/png;base64," + photo),
-                                        $('<button>').attr('class', 'mdl-button mdl-js-button mdl-button--raised btn_check').attr('onclick', 'checkPhoto("' + id + '")').append('<i class="material-icons">check</i>'),
-                                        $('<button>').attr('class', 'mdl-button mdl-js-button mdl-button--raised btn_clear').attr('onclick', 'clearPhoto("' + id + '")').append('<i class="material-icons">clear</i>')
-                                )
-                        );
+             $("#title").text(color + " photos of " + name + " " + surname);
 
 
-                    }
+             $.ajax({
+                 type: 'GET',
+                 url: 'http://localhost:8008/DEMOService/' + rfidUrl + '/' + color,
+                 dataType: 'json',
+                 success: function (data) {
+                     var json = JSON.parse(JSON.stringify(data));
 
-                },
-                error: function (result) {
-                    alert("Error, impossible to contact the Web Service");
-                }
-            });
+                     for (var i = 0; json.length; i++) {
+                         if (json[i] == null) break;
+                         var photo = json[i].picture;
+                         var id_s = json[i].session_id;
+                         $("#photos").append(
+                                 $("<div>").attr("id", id_s).attr("class", "picture_to_color").append(
+                                         $('<img>').attr("class", color + "_photo").attr("src", "data:image/png;base64," + photo),
+                                         $('<button>').attr('class', 'mdl-button mdl-js-button mdl-button--raised btn_check').attr('onclick', 'checkPhoto("' + id_s + '")').append('<i class="material-icons">check</i>'),
+                                         $('<button>').attr('class', 'mdl-button mdl-js-button mdl-button--raised btn_clear').attr('onclick', 'clearPhoto("' + id_s + '")').append('<i class="material-icons">clear</i>')
+                                 )
+                         );
 
 
-        });
+                     }
 
-    </script>
+                 },
+                 error: function (result) {
+                     alert("Error, impossible to contact the Web Service");
+                 }
+             });
+
+
+         });
+
+     </script>
 </head>
 <body>
 
