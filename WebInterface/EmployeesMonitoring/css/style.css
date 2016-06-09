@@ -105,6 +105,18 @@ div.mdl-textfield {
     width: 400px;
 }
 
+button.camera_green{
+    color: green;
+}
+
+button.camera_yellow{
+    color: yellow;
+}
+
+button.camera_red{
+    color: red;
+}
+
 img.YELLOW_photo{
     border: 3px solid yellow;
 }

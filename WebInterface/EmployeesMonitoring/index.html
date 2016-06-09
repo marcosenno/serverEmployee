@@ -72,8 +72,11 @@
                                         $('<td class="mdl-data-table__cell--non-numeric">').append(json[i].surname),
                                         $('<td class="mdl-data-table__cell--non-numeric">').append(
                                                 $('<a>').attr("id", "EditAnchor").attr("href", "edit.html?rfid=" + json[i].rfid).append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored\"><i class=\"material-icons\">edit</i></button>"),
-                                                $('<a>').attr("id", "DeleteAnchor").attr("onclick", "deleteEmployee(" + json[i].rfid + ")").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored\"><i class=\"material-icons\">delete</i></button>")
-                                        )
+                                                $('<a>').attr("id", "DeleteAnchor").attr("onclick", "deleteEmployee(" + json[i].rfid + ")").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored\"><i class=\"material-icons\">delete</i></button>"),
+                                                $('<a>').attr("href", "edit.html?rfid=" + json[i].rfid + "&color=GREEN").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored camera_green\"><i class=\"material-icons\">photo_camera</i></button>"),
+                                                $('<a>').attr("href", "edit.html?rfid=" + json[i].rfid + "&color=YELLOW").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored camera_yellow\"><i class=\"material-icons\">photo_camera</i></button>"),
+                                                $('<a>').attr("href", "edit.html?rfid=" + json[i].rfid + "&color=RED").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored camera_red\"><i class=\"material-icons\">photo_camera</i></button>")
+                    )
                                 )
                         );
                     }
