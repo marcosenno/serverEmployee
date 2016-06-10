@@ -44,7 +44,7 @@ namespace RESTService.Lib
         ColoredPicture[] getPictureColored(string rfid, string color);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "changecolor")]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "changecolor/")]
         ResponseMessage changeColor(ChangePicture emp);
 
         [OperationContract]
@@ -59,6 +59,13 @@ namespace RESTService.Lib
         [WebInvoke(Method = "DELETE", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "employees/{rfid}")]
         ResponseMessage deleteEmployee(string rfid);
 
+        [OperationContract]
+        [WebInvoke(Method = "OPTIONS", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "employees/{rfid}")]
+        ResponseMessage editEmployeeOptions(string rfid, Employee employee);
+
+        [OperationContract]
+        [WebInvoke(Method = "OPTIONS", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "changecolor/")]
+        ResponseMessage changeColorOptions(ChangePicture emp);
 
 
     }

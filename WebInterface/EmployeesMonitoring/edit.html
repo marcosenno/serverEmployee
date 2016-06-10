@@ -74,9 +74,8 @@
                 //ajax call
                 $.ajax({
                     type: 'PUT',
-                    url: 'http://localhost:8008/DEMOService/employees/' + rfid,
+                    url: 'http://127.0.0.1:8008/DEMOService/employees/' + rfid,
                     contentType: 'application/json; charset=utf-8',
-                    crossDomain:true,
                     data: JSON.stringify(jsonRequest),
                     dataType: 'json',
                     success: function (data) {
