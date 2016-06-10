@@ -22,8 +22,8 @@
 
          var rfidUrl = getParameterByName("rfid");
          var color = getParameterByName("color");
-         var name;
-         var surname;
+         var name = "test";
+         var surname = "test"; 
 
          function modifyColor(jsonRequest, id) {
 
@@ -45,11 +45,11 @@
                                  alert("error");
                          }
                      } else {
-                         alert("Impossible to set color now");
+                         alert("Impossible to set color now 1");
                      }
                  },
                  error: function (result) {
-                     alert("Impossible to set color now");
+                     alert("Impossible to set color now 2"+ result);
                  }
              });
 
@@ -74,7 +74,7 @@
              var jsonRequest = {
                  rfid: rfidUrl,
                  session_id: id,
-                 color: "GREEN"
+                 color: "RED"
              };
 
              modifyColor(jsonRequest, id);
@@ -102,9 +102,12 @@
                              name = json.employee.name;
                              $("#nameInputText").val(name);
                              surname = json.employee.surname;
+                             alert(surname);
                              $("#surnameInputText").val(surname);
                              $("#picture_info").append(
                                      $('<img>').attr("src", "data:image/png;base64," + json.picture));
+                            $("#title").text(color + " photos of " + name + " " + surname);
+
                          }
                      } else {
                          alert("Error in GetInfo");
@@ -119,7 +122,6 @@
                  document.location.href = "index.html";
              });
 
-             $("#title").text(color + " photos of " + name + " " + surname);
 
 
              $.ajax({

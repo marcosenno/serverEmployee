@@ -544,6 +544,12 @@ namespace RESTService.Lib
         public  ResponseMessage changeColor(ChangePicture emp)
         {
 
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Max-Age", "1728000");
+
+
             DBConnect db = new DBConnect();
             MySqlConnection conn = db.getConnection();
             string query = "SELECT * FROM colors where rfid='" + emp.rfid + "' and session_id='" + emp.session_id + "';";
