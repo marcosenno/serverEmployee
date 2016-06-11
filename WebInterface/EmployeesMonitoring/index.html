@@ -11,7 +11,7 @@
 
 
         function deleteEmployee(rfid) {
-            if (confirm("DO you want to delete this Employee?")) {
+            if (confirm("Do you want to delete this Employee?")) {
                 var jsonRequest = {
                     rfid: rfid
                 };
@@ -44,7 +44,7 @@
                         document.location.href = "index.html";
                     },
                     error: function (result) {
-                        alert("Error");
+                        alert("Error function delete");
                         document.location.href = "index.html";
                     }
                 });
@@ -73,9 +73,9 @@
                                         $('<td class="mdl-data-table__cell--non-numeric">').append(
                                                 $('<a>').attr("id", "EditAnchor").attr("href", "edit.html?rfid=" + json[i].rfid).append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored\"><i class=\"material-icons\">edit</i></button>"),
                                                 $('<a>').attr("id", "DeleteAnchor").attr("onclick", "deleteEmployee(" + json[i].rfid + ")").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored\"><i class=\"material-icons\">delete</i></button>"),
-                                                $('<a>').attr("href", "photos.html?rfid=" + json[i].rfid + "&color=GREEN").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored camera_green\"><i class=\"material-icons\">photo_camera</i></button>"),
-                                                $('<a>').attr("href", "photos.html?rfid=" + json[i].rfid + "&color=YELLOW").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored camera_yellow\"><i class=\"material-icons\">photo_camera</i></button>"),
-                                                $('<a>').attr("href", "photos.html?rfid=" + json[i].rfid + "&color=RED").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored camera_red\"><i class=\"material-icons\">photo_camera</i></button>")
+                                                $('<a>').attr("href", "photos.html?rfid=" + json[i].rfid + "&color=GREEN").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored \"><i class=\"material-icons camera_green\">photo_camera</i></button>"),
+                                                $('<a>').attr("href", "photos.html?rfid=" + json[i].rfid + "&color=YELLOW").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored \"><i class=\"material-icons camera_yellow\">photo_camera</i></button>"),
+                                                $('<a>').attr("href", "photos.html?rfid=" + json[i].rfid + "&color=RED").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored \"><i class=\"material-icons camera_red\">photo_camera</i></button>")
                     )
                                 )
                         );
@@ -117,7 +117,6 @@
 
             <button class="add_fab mdl-button mdl-js-button mdl-button--fab mdl-button--colored" id="AddNewEmployee"><i
                     class="material-icons">add</i></button>
-
         </div>
     </main>
 </div>

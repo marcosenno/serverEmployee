@@ -59,7 +59,7 @@ div.mdl-layout__header-row {
     padding-left: 20px;
 }
 
-div.form_container {
+div.form_container_photos {
     margin: 20px;
     float: left;
 }
@@ -105,15 +105,15 @@ div.mdl-textfield {
     width: 400px;
 }
 
-button.camera_green{
+i.camera_green{
     color: green;
 }
 
-button.camera_yellow{
+i.camera_yellow{
     color: yellow;
 }
 
-button.camera_red{
+i.camera_red{
     color: red;
 }
 
