@@ -15,6 +15,8 @@ using Emgu.CV.Structure;
 using System.Web;
 using System.ServiceModel.Web;
 using System.Diagnostics;
+using System.Xml;
+using System.Threading;
 
 namespace RESTService.Lib
 {
@@ -575,6 +577,95 @@ namespace RESTService.Lib
                     File.Move(ROOT + "\\" + emp.rfid + "\\" + oldcolor + "\\" + emp.session_id + ".bmp",
                         ROOT + "\\" + emp.rfid + "\\" + emp.color + "\\" + emp.session_id + ".bmp");
                     conn.Close();
+                    if (emp.color.Equals(ColorType.GREEN.ToString()))
+                    {
+                        string trainedFacesFolder = ROOT + "\\" + emp.rfid + "\\" + ColorType.GREEN.ToString();
+                        string fileName = emp.session_id + ".bmp"; 
+
+
+                        if (File.Exists(trainedFacesFolder + "/TrainedLabels.xml"))
+                        {
+                            XmlDocument docu = new XmlDocument();
+                            bool loading = true;
+                            while (loading)
+                            {
+                                try
+                                {
+                                    docu.Load(trainedFacesFolder + "/TrainedLabels.xml");
+                                    loading = false;
+                                }
+                                catch
+                                {
+                                    docu = null;
+                                    docu = new XmlDocument();
+                                    Thread.Sleep(10);
+                                }
+                            }
+
+                            //Get the root element
+                            XmlElement root = docu.DocumentElement;
+
+                            XmlElement employee_D = docu.CreateElement("EMPLOYEE");
+                            XmlElement rfid_D = docu.CreateElement("RFID");
+                            XmlElement file_D = docu.CreateElement("FILE");
+
+                            //Add the values for each nodes
+                            rfid_D.InnerText = emp.rfid;
+                            file_D.InnerText = fileName;
+
+                            //Construct the employee element
+                            employee_D.AppendChild(rfid_D);
+                            employee_D.AppendChild(file_D);
+
+                            //Add the New employee element to the end of the root element
+                            root.AppendChild(employee_D);
+
+                            //Save the document
+                            docu.Save(trainedFacesFolder + "/TrainedLabels.xml");
+                        }
+
+
+                    }
+                    else if (oldcolor.Equals(ColorType.GREEN.ToString()))
+                    {
+
+                        //loadfile
+                        string trainedFacesFolder = ROOT + "\\" + emp.rfid + "\\" + ColorType.GREEN.ToString();
+                        string fileName = emp.session_id + ".bmp"; 
+
+
+                        if (File.Exists(trainedFacesFolder + "/TrainedLabels.xml"))
+                        {
+                            XmlDocument docu = new XmlDocument();
+                            bool loading = true;
+                            while (loading)
+                            {
+                                try
+                                {
+                                    docu.Load(trainedFacesFolder + "/TrainedLabels.xml");
+                                    loading = false;
+                                }
+                                catch
+                                {
+                                    docu = null;
+                                    docu = new XmlDocument();
+                                    Thread.Sleep(10);
+                                }
+                            }
+
+
+                            XmlNodeList nodeList = docu.SelectNodes("//EMPLOYEE[contains(FILE,'"+fileName+"')]");
+                           
+                            foreach(XmlNode n in nodeList)
+                                n.ParentNode.RemoveChild(n);
+                            //Save the document
+                            docu.Save(trainedFacesFolder + "/TrainedLabels.xml");
+                        }
+
+
+                       
+
+                    }
                     return new ResponseMessage(200, "Color updated for " + emp.session_id);
 
                 }
@@ -651,8 +742,75 @@ namespace RESTService.Lib
 
             return e;
         }
-        
-        public  ResponseMessage addEmployee(string rfid, EmployeePic employee)
+
+
+
+
+        public ResponseMessage addEmployee(string rfid, EmployeePic employee)
+        {
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Max-Age", "1728000");
+
+            try
+            {
+                createDirectories(rfid);
+                byte[] pict = Convert.FromBase64String(employee.picture);
+                string pictName = employee.employee.rfid;
+                string path = ROOT + "\\" + rfid + "\\" + ColorType.GREEN.ToString() + "\\" + pictName + ".bmp";
+                File.WriteAllBytes(path, pict);
+
+                Image<Bgr, byte> receivedImg = new Image<Bgr, byte>(path);
+                Image<Gray, byte> normalizedImg = receivedImg.Convert<Gray, Byte>();
+
+                Rectangle[] rectangles = classifier.DetectMultiScale(normalizedImg, 1.4, 1, new Size(100, 100), new Size(800, 800));
+
+                foreach (Rectangle r in rectangles)
+                    receivedImg.Draw(r, new Bgr(Color.Red), 2);
+
+                if (rectangles.Length <= 0)
+                {
+                    //put into red folder
+                    return new ResponseMessage(201, "Impossible to insert a new Employee.Face Not found.");
+                }
+
+                normalizedImg = receivedImg.Copy(rectangles[0]).Convert<Gray, byte>().Resize(64, 64, Emgu.CV.CvEnum.Inter.Cubic);
+                normalizedImg._EqualizeHist();
+
+                Classifier_Train eigenRecog = new Classifier_Train(ROOT + "\\" + rfid + "\\" + ColorType.GREEN.ToString());
+
+
+                eigenRecog.AddTrainingImage(normalizedImg, rfid,rfid+".bmp");
+
+                Image<Gray, byte> dummyImg = new Image<Gray, byte>("dummy.jpg");
+                File.Copy("dummy.jpg", ROOT + "\\" + rfid + "\\" + ColorType.GREEN.ToString()+"\\"+"dummy.jpg"); 
+                eigenRecog.AddTrainingImage(dummyImg, "Unknown","dummy.jpg");
+
+                DBConnect db = new DBConnect();
+                MySqlConnection conn = db.getConnection();
+                MySqlCommand cmd2 = new MySqlCommand();
+                cmd2.Connection = conn;
+                cmd2.CommandText = "INSERT INTO `user`(`rfid`, `name`, `surname`) VALUES (?a,?b,?c);";
+                cmd2.Parameters.Add("?a", MySqlDbType.VarChar).Value = employee.employee.rfid;
+                cmd2.Parameters.Add("?b", MySqlDbType.VarChar).Value = employee.employee.name;
+                cmd2.Parameters.Add("?c", MySqlDbType.VarChar).Value = employee.employee.surname;
+                cmd2.ExecuteNonQuery();
+                conn.Close();
+            }
+            catch (Exception e)
+            {
+                return new ResponseMessage(201, "Impossible to insert a new Employee.");
+            }
+            return new ResponseMessage(200, employee.employee.name + " " + employee.employee.surname + " added correctly.");
+
+        }
+
+
+
+
+
+        public  ResponseMessage addEmployee2(string rfid, EmployeePic employee)
         {
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
