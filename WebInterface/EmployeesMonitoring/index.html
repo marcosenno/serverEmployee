@@ -41,11 +41,11 @@
                             alert("error");
                         }
 
-                        document.location.href = "index.html";
+                        location.reload();
                     },
                     error: function (result) {
                         alert("Error function delete");
-                        document.location.href = "index.html";
+                        location.reload();
                     }
                 });
 
@@ -72,7 +72,7 @@
                                         $('<td class="mdl-data-table__cell--non-numeric">').append(json[i].surname),
                                         $('<td class="mdl-data-table__cell--non-numeric">').append(
                                                 $('<a>').attr("id", "EditAnchor").attr("href", "edit.html?rfid=" + json[i].rfid).append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored\"><i class=\"material-icons\">edit</i></button>"),
-                                                $('<a>').attr("id", "DeleteAnchor").attr("onclick", "deleteEmployee(" + json[i].rfid + ")").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored\"><i class=\"material-icons\">delete</i></button>"),
+                                                $('<a>').attr("id", "DeleteAnchor").attr("onclick", "deleteEmployee('" + json[i].rfid + "')").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored\"><i class=\"material-icons\">delete</i></button>"),
                                                 $('<a>').attr("href", "photos.html?rfid=" + json[i].rfid + "&color=GREEN").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored \"><i class=\"material-icons camera_green\">photo_camera</i></button>"),
                                                 $('<a>').attr("href", "photos.html?rfid=" + json[i].rfid + "&color=YELLOW").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored \"><i class=\"material-icons camera_yellow\">photo_camera</i></button>"),
                                                 $('<a>').attr("href", "photos.html?rfid=" + json[i].rfid + "&color=RED").append("<button class=\"mdl-button mdl-js-button mdl-button--icon mdl-button--colored \"><i class=\"material-icons camera_red\">photo_camera</i></button>")

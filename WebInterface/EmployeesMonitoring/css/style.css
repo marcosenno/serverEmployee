@@ -110,7 +110,7 @@ i.camera_green{
 }
 
 i.camera_yellow{
-    color: yellow;
+    color: #c0ca33;
 }
 
 i.camera_red{
@@ -118,7 +118,7 @@ i.camera_red{
 }
 
 img.YELLOW_photo{
-    border: 3px solid yellow;
+    border: 3px solid #c0ca33;
 }
 
 img.RED_photo{
