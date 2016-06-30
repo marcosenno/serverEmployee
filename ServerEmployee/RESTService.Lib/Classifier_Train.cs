@@ -199,23 +199,28 @@ namespace RESTService.Lib
         /// <summary>
         /// Add Training Image with a specific rfid
         /// </summary>
-        public bool AddTrainingImage(Image<Gray, byte> photo, string rfid)
+        public bool AddTrainingImage(Image<Gray, byte> photo, string rfid, string filename = "def" )
         {
             try
             {
                 Random rand = new Random();
                 bool file_create = true;
-                string fileName = "face_" + rfid + "_" + rand.Next().ToString() + ".jpg";
-                while (file_create)
+                string fileName = filename;
+                if (filename.Equals("def"))
                 {
+                    fileName = "face_" + rfid + "_" + rand.Next().ToString() + ".jpg";
+                    while (file_create)
+                    {
 
-                    if (!File.Exists(trainedFacesFolder + "/" + fileName))
-                    {
-                        file_create = false;
-                    }
-                    else
-                    {
-                        fileName = "face_" + rfid + "_" + rand.Next().ToString() + ".jpg";
+                        if (!File.Exists(trainedFacesFolder + "/" + fileName))
+                        {
+                            file_create = false;
+                        }
+                        else
+                        {
+                            fileName = "face_" + rfid + "_" + rand.Next().ToString() + ".jpg";
+
+                        }
                     }
                 }
 
