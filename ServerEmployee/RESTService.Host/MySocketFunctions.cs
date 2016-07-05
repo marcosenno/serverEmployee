@@ -38,8 +38,6 @@ namespace RESTService.Host
         public static int socketWriteLine(Socket sender, string message)
         {
             byte[] msg = Encoding.ASCII.GetBytes(message + "\n");
-
-            // Send the data through the socket.
             int bytesSent = sender.Send(msg);
             return bytesSent;
 

@@ -29,11 +29,12 @@ namespace RESTService.Lib
         private string PATHDIR = "C:\\EmployeePhoto\\openSession";
         private string ROOT = "C:\\EmployeePhoto";
         private CascadeClassifier classifier = new CascadeClassifier("haarcascade_frontalface_default.xml");
-        private int greenValue = 2600;
-        private int yellowValue = 1500;
+        private int greenValue = 2100;
+        private int yellowValue = 2600;
         
-        public  ResponseMessage enterBadge(EmployeeBadge e)
+        public  ResponseMessageColor enterBadge(EmployeeBadge e)
         {
+
             Debug.WriteLine("enterBadge called");
             DBConnect db = new DBConnect();
             MySqlConnection conn = db.getConnection();
@@ -51,10 +52,13 @@ namespace RESTService.Lib
             {
                 conn.Close();
                 Debug.WriteLine("Person with that RFID not found");
-                return new ResponseMessage(201, "Not found RFID.");
+                return new ResponseMessageColor(201, "Not found RFID.");
             }
 
             conn.Close();
+
+
+
 
             db = new DBConnect();
             conn = db.getConnection();
@@ -65,9 +69,37 @@ namespace RESTService.Lib
             {
                 conn.Close();
                 Debug.WriteLine("Session '" + e.session + "' not found");
-                return new ResponseMessage(201, "Not found session.");
+                return new ResponseMessageColor(201, "Not found session.");
             }
             conn.Close();
+
+
+            if (!checkFace(PATHDIR + "\\" + e.session + ".bmp"))
+            {
+                File.Delete(PATHDIR + "\\" + e.session + ".bmp");
+
+                db = new DBConnect();
+                conn = db.getConnection();
+                MySqlCommand cmd3 = new MySqlCommand();
+                cmd3.Connection = conn;
+                cmd3.CommandText = "delete from sessions_user where session_id =?a ";
+                cmd3.Parameters.Add("?a", MySqlDbType.VarChar).Value = e.session;
+                try
+                {
+                    cmd3.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    Debug.WriteLine("Failed to delete from sessions_user, error code: " + ex.Number);
+                }
+                conn.Close();
+
+
+                return new ResponseMessageColor(404, "Face Not found.");
+
+
+            }
+
 
             db = new DBConnect();
             conn = db.getConnection();
@@ -77,8 +109,27 @@ namespace RESTService.Lib
             if (count % 2 != 0)
             {
                 conn.Close();
+
+
+                db = new DBConnect();
+                conn = db.getConnection();
+                MySqlCommand cmd3 = new MySqlCommand();
+                cmd3.Connection = conn;
+                cmd3.CommandText = "delete from sessions_user where session_id =?a ";
+                cmd3.Parameters.Add("?a", MySqlDbType.VarChar).Value = e.session;
+                try
+                {
+                    cmd3.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    Debug.WriteLine("Failed to delete from sessions_user, error code: " + ex.Number);
+                }
+                conn.Close();
+
+
                 File.Delete(PATHDIR + "\\" + e.session + ".bmp");
-                return new ResponseMessage(201, "You cannot enter again.");
+                return new ResponseMessageColor(201, "You cannot enter again.");
             }
             conn.Close();
 
@@ -106,11 +157,11 @@ namespace RESTService.Lib
 
             db = new DBConnect();
             conn = db.getConnection();
-            MySqlCommand cmd3 = new MySqlCommand();
-            cmd3.Connection = conn;
-            cmd3.CommandText = "delete from sessions_user where session_id =?a ";
-            cmd3.Parameters.Add("?a", MySqlDbType.VarChar).Value = e.session;
-            cmd3.ExecuteNonQuery();
+            MySqlCommand cmd6 = new MySqlCommand();
+            cmd6.Connection = conn;
+            cmd6.CommandText = "delete from sessions_user where session_id =?a ";
+            cmd6.Parameters.Add("?a", MySqlDbType.VarChar).Value = e.session;
+            cmd6.ExecuteNonQuery();
             conn.Close();
 
             concludeSession(e.rfid, e.session);
@@ -132,18 +183,9 @@ namespace RESTService.Lib
             }
             conn.Close();
 
-            return faceDetectionAndConcludeSession(e, name, surname);
+            return faceDetectionAndConcludeSession(e, name, surname, true);
 
-            /*if (faceDetectionAndConcludeSession(e))
-            {
-                Debug.WriteLine("Face succesfully detected");
-                return new ResponseMessage(200, "Welcome " + name + " " + surname);
-            }
-            else
-            {
-                Debug.WriteLine("Face not detected");
-                return new ResponseMessage(404, "Face Not found.");
-            }*/
+
 
 
         }
@@ -190,7 +232,7 @@ namespace RESTService.Lib
             return ROOT + "\\" + rfid + "\\" +currentColor + "\\" + session + ".bmp";
         }
 
-        public  ResponseMessage exitBadge(EmployeeBadge e)
+        public  ResponseMessageColor exitBadge(EmployeeBadge e)
         {
             Debug.WriteLine("exitBadge called");
             DBConnect db = new DBConnect();
@@ -209,10 +251,12 @@ namespace RESTService.Lib
             {
                 conn.Close();
                 Debug.WriteLine("Person with that RFID not found");
-                return new ResponseMessage(201, "Not found RFID.");
+                return new ResponseMessageColor(201, "Not found RFID.");
             }
 
             conn.Close();
+
+          
 
             db = new DBConnect();
             conn = db.getConnection();
@@ -223,9 +267,36 @@ namespace RESTService.Lib
             {
                 Debug.WriteLine("Session '" + e.session + "' not found");
                 conn.Close();
-                return new ResponseMessage(201, "Not found session.");
+                return new ResponseMessageColor(201, "Not found session.");
             }
             conn.Close();
+
+            if (!checkFace(PATHDIR + "\\" + e.session + ".bmp"))
+            {
+                File.Delete(PATHDIR + "\\" + e.session + ".bmp");
+
+                db = new DBConnect();
+                conn = db.getConnection();
+                MySqlCommand cmd3 = new MySqlCommand();
+                cmd3.Connection = conn;
+                cmd3.CommandText = "delete from sessions_user where session_id =?a ";
+                cmd3.Parameters.Add("?a", MySqlDbType.VarChar).Value = e.session;
+                try
+                {
+                    cmd3.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    Debug.WriteLine("Failed to delete from sessions_user, error code: " + ex.Number);
+                }
+                conn.Close();
+
+
+                return new ResponseMessageColor(404, "Face Not found.");
+
+
+            }
+
 
             db = new DBConnect();
             conn = db.getConnection();
@@ -235,8 +306,25 @@ namespace RESTService.Lib
             if (count % 2 == 0)
             {
                 conn.Close();
+
+                db = new DBConnect();
+                conn = db.getConnection();
+                MySqlCommand cmd3 = new MySqlCommand();
+                cmd3.Connection = conn;
+                cmd3.CommandText = "delete from sessions_user where session_id =?a ";
+                cmd3.Parameters.Add("?a", MySqlDbType.VarChar).Value = e.session;
+                try
+                {
+                    cmd3.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    Debug.WriteLine("Failed to delete from sessions_user, error code: " + ex.Number);
+                }
+                conn.Close();
+
                 File.Delete(PATHDIR + "\\" + e.session + ".bmp");
-                return new ResponseMessage(201, "You cannot exit again.");
+                return new ResponseMessageColor(201, "You cannot exit again.");
             }
             conn.Close();
 
@@ -264,13 +352,13 @@ namespace RESTService.Lib
 
             db = new DBConnect();
             conn = db.getConnection();
-            MySqlCommand cmd3 = new MySqlCommand();
-            cmd3.Connection = conn;
-            cmd3.CommandText = "delete from sessions_user where session_id =?a ";
-            cmd3.Parameters.Add("?a", MySqlDbType.VarChar).Value = e.session;
+            MySqlCommand cmd5 = new MySqlCommand();
+            cmd5.Connection = conn;
+            cmd5.CommandText = "delete from sessions_user where session_id =?a ";
+            cmd5.Parameters.Add("?a", MySqlDbType.VarChar).Value = e.session;
             try
             {
-                cmd3.ExecuteNonQuery();
+                cmd5.ExecuteNonQuery();
             }
             catch (MySqlException ex)
             {
@@ -298,12 +386,40 @@ namespace RESTService.Lib
             }
             conn.Close();
 
-            return faceDetectionAndConcludeSession(e, name, surname);
+
+            
+
+                return faceDetectionAndConcludeSession(e, name, surname,false);
+           
 
             
         }
 
-        private int getSeconds(EmployeeBadge e)
+
+        private bool checkFace(string path)
+        { 
+            
+           
+
+            Image<Bgr, byte> receivedImg = new Image<Bgr, byte>(path);
+            Image<Gray, byte> normalizedImg = receivedImg.Convert<Gray, Byte>();
+
+            Rectangle[] rectangles = classifier.DetectMultiScale(normalizedImg, 1.4, 1, new Size(100, 100), new Size(800, 800));
+
+            foreach (Rectangle r in rectangles)
+                receivedImg.Draw(r, new Bgr(Color.Red), 2);
+
+            receivedImg.Save("photoFaced.jpg");
+
+            if (rectangles.Length <= 0)
+            {
+                return false;
+            }
+            return true; 
+
+        }
+
+        private String getSeconds(EmployeeBadge e)
         {
             Debug.WriteLine("getSeconds called");
             DBConnect db = new DBConnect();
@@ -361,7 +477,9 @@ namespace RESTService.Lib
             Double doublesecondsOfWork = fexit - fenter;
             int secondOfWork = (int)doublesecondsOfWork;
             Debug.WriteLine("calculated seconds: " + secondOfWork.ToString());
-            return secondOfWork; 
+
+            TimeSpan span = TimeSpan.FromSeconds(secondOfWork);
+            return span.ToString(@"hh\:mm\:ss");
         }
 
         public  ResponseMessage test(string s, Stream fileStream)
@@ -369,8 +487,38 @@ namespace RESTService.Lib
             return new ResponseMessage(200, "stringa ricevuta:" + s);
         }
 
-        public ResponseMessage faceDetectionAndConcludeSession(EmployeeBadge employee, string name, string surname)
+        public ResponseMessageColor faceDetectionAndConcludeSession(EmployeeBadge employee, string name, string surname,bool isentering)
         {
+
+            DBConnect db = new DBConnect();
+            MySqlConnection conn = db.getConnection();
+            string query = "SELECT * FROM colors where color='GREEN' and rfid='" + employee.rfid + "'";
+            MySqlCommand cmd = new MySqlCommand(query, conn);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            
+            int count=0;
+            while(dataReader.Read())
+            {
+                count++; 
+            }
+
+            conn.Close();
+
+            if (count < 5)
+            {
+                if (isentering)
+                { new ResponseMessageColor(200, "Welcome " + name + " " + surname, "YELLOW");  }
+                else
+                    return new ResponseMessageColor(200, "You worked "+getSeconds(employee) +" seconds" , "YELLOW");
+
+            }
+           
+
+
+
+
+
+
             string pathpicture = getPictureUri(employee.rfid, employee.session);
 
             Image<Bgr, byte> receivedImg = new Image<Bgr, byte>(pathpicture);
@@ -385,15 +533,18 @@ namespace RESTService.Lib
 
             if (rectangles.Length <= 0)
             {
+
+                // NEVER REACHED THIS CODE ! ! ! ! ! 
+
+
                 //put into red folder
-                ChangePicture c = new ChangePicture();
+               /* ChangePicture c = new ChangePicture();
                 c.rfid = employee.rfid;
                 c.session_id = employee.session;
                 c.color = ColorType.RED.ToString();
-                changeColor(c); 
-
+                changeColor(c);*/
                // putSessionPhotoIntoRightFolder(employee, ColorType.RED);
-                return new ResponseMessage(404, "Face Not found.");
+                return new ResponseMessageColor(404, "Never reached this code.");
             }
 
             
@@ -421,7 +572,10 @@ namespace RESTService.Lib
                     c.color = ColorType.RED.ToString();
                     changeColor(c); 
                     //putSessionPhotoIntoRightFolder(employee, ColorType.RED);
-                    return new ResponseMessage(404, "Face Not Recognized.");
+                    if(isentering)
+                    return new ResponseMessageColor(200, "Welcome " + name + " " + surname);
+                    else
+                        return new ResponseMessageColor(200, "You worked " + getSeconds(employee).ToString() + " seconds");
                 }
                 else
                 {
@@ -432,7 +586,10 @@ namespace RESTService.Lib
                     c.color = ColorType.YELLOW.ToString();
                     changeColor(c); 
                     //putSessionPhotoIntoRightFolder(employee, ColorType.YELLOW);
-                    return new ResponseMessage(200, "Welcome " + name + " " + surname);
+                    if(isentering)
+                    return new ResponseMessageColor(200, "Welcome " + name + " " + surname,"YELLOW");
+                    else
+                        return new ResponseMessageColor(200, "You worked " + getSeconds(employee) + " seconds", "YELLOW");
                 }
             }
             else
@@ -443,38 +600,14 @@ namespace RESTService.Lib
                 c.session_id = employee.session;
                 c.color = ColorType.GREEN.ToString();
                 changeColor(c); 
-                eigenRecog.AddTrainingImage(normalizedImg, labelName);
-                return new ResponseMessage(200, "Welcome " + name + " " + surname);
+                eigenRecog.AddTrainingImage(normalizedImg, employee.rfid, employee.rfid+".bmp");
+                if(isentering)
+                return new ResponseMessageColor(200, "Welcome " + name + " " + surname,"GREEN");
+                else return new ResponseMessageColor(200, "You worked " + getSeconds(employee) + " seconds", "GREEN");
             }
         }
 
-        /*
-        private void putSessionPhotoIntoRightFolder(EmployeeBadge employee, ColorType colorType)
-        {
-            if (File.Exists(PATHDIR + "\\" + employee.session + ".bmp"))
-                File.Move(PATHDIR + "\\" + employee.session + ".bmp",
-                    ROOT + "\\" + employee.rfid + "\\" + colorType.ToString() + "\\" + employee.session + ".bmp");
-
-            DBConnect db = new DBConnect();
-            MySqlConnection conn = db.getConnection();
-            MySqlCommand cmd = new MySqlCommand();
-            cmd.Connection = conn;
-            cmd.CommandText = "INSERT INTO colors(session_id,rfid,color) VALUES(?a,?b,?c)";
-            cmd.Parameters.Add("?a", MySqlDbType.VarChar).Value = employee.session;
-            cmd.Parameters.Add("?b", MySqlDbType.VarChar).Value = employee.rfid;
-            cmd.Parameters.Add("?c", MySqlDbType.Enum).Value = colorType;
-
-            try
-            {
-                cmd.ExecuteNonQuery();
-            }
-            catch (MySqlException ex)
-            {
-                Debug.WriteLine("Insertion execution failed, error code: " + ex.Number);
-            }
-            conn.Close();
-        }
-        */
+        
 
         public  ResponseMessage test()
         {
@@ -534,7 +667,7 @@ namespace RESTService.Lib
                 employee.employee.rfid = dataReader["rfid"].ToString();
                 employee.employee.name = dataReader["name"].ToString();
                 employee.employee.surname = dataReader["surname"].ToString();
-                string path = ROOT + "\\" + rfid + "\\" + rfid + ".bmp";
+                string path = ROOT + "\\" + rfid + "\\" +"GREEN"+"\\"+ rfid + ".bmp";
                 string base64picture = Convert.ToBase64String(File.ReadAllBytes(path));
                 employee.picture = base64picture;
             }
@@ -565,7 +698,7 @@ namespace RESTService.Lib
             }
             conn.Close();
 
-            if (oldcolor != "")
+            if (oldcolor != "" && oldcolor!=emp.color)
             {
                 db = new DBConnect();
                 conn = db.getConnection();
@@ -783,9 +916,9 @@ namespace RESTService.Lib
 
                 eigenRecog.AddTrainingImage(normalizedImg, rfid,rfid+".bmp");
 
-                Image<Gray, byte> dummyImg = new Image<Gray, byte>("dummy.jpg");
-                File.Copy("dummy.jpg", ROOT + "\\" + rfid + "\\" + ColorType.GREEN.ToString()+"\\"+"dummy.jpg"); 
-                eigenRecog.AddTrainingImage(dummyImg, "Unknown","dummy.jpg");
+                /* Image<Gray, byte> dummyImg = new Image<Gray, byte>("dummy.jpg");
+                 File.Copy("dummy.jpg", ROOT + "\\" + rfid + "\\" + ColorType.GREEN.ToString()+"\\"+"dummy.jpg"); 
+                eigenRecog.AddTrainingImage(dummyImg, "Unknown","dummy.jpg");*/
 
                 DBConnect db = new DBConnect();
                 MySqlConnection conn = db.getConnection();
@@ -893,6 +1026,9 @@ namespace RESTService.Lib
             string query = "DELETE FROM `user` WHERE `rfid` = '" + rfid + "'";
             MySqlCommand cmd = new MySqlCommand(query, conn);
             int row = cmd.ExecuteNonQuery();
+
+            Directory.Delete(ROOT + "\\" + rfid, true); 
+
 
             conn.Close();
 

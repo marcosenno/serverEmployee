@@ -15,6 +15,7 @@ using System.Xml.Serialization;
 using System.Drawing.Imaging;
 using Emgu.CV.Face;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace RESTService.Lib
 {
@@ -27,6 +28,7 @@ namespace RESTService.Lib
         #region Variables
 
         string trainedFacesFolder = "TrainedFaces";
+        private CascadeClassifier classifier = new CascadeClassifier("haarcascade_frontalface_default.xml");
 
         //Eigen
         //EigenObjectRecognizer recognizer;
@@ -128,7 +130,7 @@ namespace RESTService.Lib
                     switch (Recognizer_Type)
                     {
                         case ("EMGU.CV.EigenFaceRecognizer"):
-                            if (Eigen_Distance > Eigen_threshold) return Eigen_label;
+                            if (Eigen_Distance < Eigen_threshold) return Eigen_label;
                             else return "Unknown";
                         case ("EMGU.CV.LBPHFaceRecognizer"):
                         case ("EMGU.CV.FisherFaceRecognizer"):
@@ -337,7 +339,25 @@ namespace RESTService.Lib
                                         if (xmlreader.Read())
                                         {
                                             //PROBLEM HERE IF TRAININGG MOVED
-                                            trainingImages.Add(new Image<Gray, byte>(trainedFacesFolder + "\\" + xmlreader.Value.Trim()));
+                                            Image<Bgr, byte> receivedImg = new Image<Bgr, byte>(trainedFacesFolder + "\\" + xmlreader.Value.Trim());
+                                            Image<Gray, byte> normalizedImg = receivedImg.Convert<Gray, Byte>();
+
+                                            Rectangle[] rectangles = classifier.DetectMultiScale(normalizedImg, 1.4, 1, new Size(100, 100), new Size(800, 800));
+
+                                            if (xmlreader.Value.Trim().Equals("dummy.jpg"))
+                                                trainingImages.Add(normalizedImg);
+                                            else
+                                            {
+                                                foreach (Rectangle r in rectangles)
+                                                    receivedImg.Draw(r, new Bgr(Color.Red), 2);
+
+                                                if (rectangles.Length <= 0) break;
+
+                                                normalizedImg = receivedImg.Copy(rectangles[0]).Convert<Gray, byte>().Resize(64, 64, Emgu.CV.CvEnum.Inter.Cubic);
+                                                normalizedImg._EqualizeHist();
+
+                                                trainingImages.Add(normalizedImg);
+                                            }
                                         }
                                         break;
                                 }

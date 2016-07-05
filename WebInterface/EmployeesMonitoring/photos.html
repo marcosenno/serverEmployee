@@ -102,7 +102,7 @@
                              name = json.employee.name;
                              $("#nameInputText").val(name);
                              surname = json.employee.surname;
-                             alert(surname);
+                             
                              $("#surnameInputText").val(surname);
                              $("#picture_info").append(
                                      $('<img>').attr("src", "data:image/png;base64," + json.picture));
@@ -144,6 +144,12 @@
                          );
 
 
+                     }
+
+                     if(color == "GREEN"){
+                        $(".btn_check").css("display", "none");
+                     } else if(color == "RED"){
+                        $(".btn_clear").css("display", "none");
                      }
 
                  },

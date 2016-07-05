@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using MySql.Data.MySqlClient;
+using System.Net.Sockets;
 
 namespace RESTService.Host
 {
@@ -16,7 +17,7 @@ namespace RESTService.Host
         private string ROOT = "C:\\EmployeePhoto";
         public ServerProcessor(System.Net.Sockets.Socket handler)
         {
-            // TODO: Complete member initialization
+            
             this.handler = handler;
             this.handler.ReceiveTimeout = TIMECLOSE;
             this.handler.SendTimeout = TIMECLOSE;
@@ -39,9 +40,23 @@ namespace RESTService.Host
                 Directory.CreateDirectory(PATHDIR);
 
             string filenameTemp = PATHDIR + "\\" + RandomString(20) + ".bmp";
-            MySocketFunctions.socketReceiveFile(handler, filenameTemp);
+            try
+            {
+                MySocketFunctions.socketReceiveFile(handler, filenameTemp);
+            }
+            catch (SocketException e) {
+                System.Diagnostics.Debug.WriteLine("Exception in Socket receive File ");
+                return; 
+            }
+
             string hash = calcChecksum(filenameTemp);
-            MySocketFunctions.socketWriteLine(handler, hash);
+            try
+            {
+                MySocketFunctions.socketWriteLine(handler, hash);
+            }catch(SocketException e ){
+                System.Diagnostics.Debug.WriteLine("Exception in Socket receive File ");
+                return; 
+            }
 
             string filenameFinal = PATHDIR + "\\" + hash + ".bmp";
             File.Copy(filenameTemp, filenameFinal);

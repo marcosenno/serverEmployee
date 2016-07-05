@@ -44,11 +44,13 @@ div.webcam {
 button.btn_clear:hover,
 button.btn_clear{
     background: red;
+    display: inline-block;
 }
 
 button.btn_check:hover,
 button.btn_check{
     background: green;
+    display: inline-block;
 }
 
 #employee_info{
@@ -94,7 +96,6 @@ div.picture_to_color > img {
 }
 
 div.picture_to_color > button{
-    display: inline-block;
     color: white;
     margin: 0 3px;
 }

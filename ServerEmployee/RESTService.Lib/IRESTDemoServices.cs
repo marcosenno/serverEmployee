@@ -16,11 +16,11 @@ namespace RESTService.Lib
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "enter")]
-        ResponseMessage enterBadge(EmployeeBadge e);
+        ResponseMessageColor enterBadge(EmployeeBadge e);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "exit")]
-        ResponseMessage exitBadge(EmployeeBadge e);
+        ResponseMessageColor exitBadge(EmployeeBadge e);
 
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "test")]
