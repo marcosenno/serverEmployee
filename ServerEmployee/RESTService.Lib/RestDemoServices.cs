@@ -479,7 +479,10 @@ namespace RESTService.Lib
             Debug.WriteLine("calculated seconds: " + secondOfWork.ToString());
 
             TimeSpan span = TimeSpan.FromSeconds(secondOfWork);
-            return span.ToString(@"hh\:mm\:ss");
+            string s =  span.ToString(@"hh\:mm\:ss");
+            string[] arr = s.Split(":".ToArray());
+            return arr[0] + " h " + arr[1] + " min " + arr[2] + " sec ";
+            
         }
 
         public  ResponseMessage test(string s, Stream fileStream)
@@ -507,9 +510,11 @@ namespace RESTService.Lib
             if (count < 5)
             {
                 if (isentering)
-                { new ResponseMessageColor(200, "Welcome " + name + " " + surname, "YELLOW");  }
+                { 
+                    return new ResponseMessageColor(200, "Welcome " + name + " " + surname, "YELLOW");  
+                }
                 else
-                    return new ResponseMessageColor(200, "You worked "+getSeconds(employee) +" seconds" , "YELLOW");
+                    return new ResponseMessageColor(200, "You worked "+getSeconds(employee)  , "YELLOW");
 
             }
            
@@ -575,7 +580,7 @@ namespace RESTService.Lib
                     if(isentering)
                     return new ResponseMessageColor(200, "Welcome " + name + " " + surname);
                     else
-                        return new ResponseMessageColor(200, "You worked " + getSeconds(employee).ToString() + " seconds");
+                        return new ResponseMessageColor(200, "You worked " + getSeconds(employee).ToString());
                 }
                 else
                 {
@@ -589,7 +594,7 @@ namespace RESTService.Lib
                     if(isentering)
                     return new ResponseMessageColor(200, "Welcome " + name + " " + surname,"YELLOW");
                     else
-                        return new ResponseMessageColor(200, "You worked " + getSeconds(employee) + " seconds", "YELLOW");
+                        return new ResponseMessageColor(200, "You worked " + getSeconds(employee) , "YELLOW");
                 }
             }
             else
@@ -603,7 +608,7 @@ namespace RESTService.Lib
                 eigenRecog.AddTrainingImage(normalizedImg, employee.rfid, employee.rfid+".bmp");
                 if(isentering)
                 return new ResponseMessageColor(200, "Welcome " + name + " " + surname,"GREEN");
-                else return new ResponseMessageColor(200, "You worked " + getSeconds(employee) + " seconds", "GREEN");
+                else return new ResponseMessageColor(200, "You worked " + getSeconds(employee) , "GREEN");
             }
         }
 
